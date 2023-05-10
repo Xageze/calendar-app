@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { DateTime } from "luxon";
 
-export const Calendar: React.FC = () => {
+export const CalendarV1: React.FC = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [osmDate, setOsmDate] = useState("");
@@ -31,48 +31,46 @@ export const Calendar: React.FC = () => {
     const nbJourDiff = parseInt(
       endDateLuxon.diff(startDateLuxon, "days").days.toFixed(0)
     );
-
     if (startDateLuxon.hasSame(endDateLuxon, "day")) {
-      setOsmDate(`${weekdayStart} ${startHour}-${endHour}`);
+      setOsmDate((prev) => prev + ` ${weekdayStart} ${startHour}-${endHour};`);
     } else {
       if (startDateLuxon.hour >= endDateLuxon.hour && nbJourDiff === 1) {
-        setOsmDate(`${weekdayStart} ${startHour}-${endHour}`);
+        setOsmDate(
+          (prev) => prev + ` ${weekdayStart} ${startHour}-${endHour};`
+        );
       } else {
-        setOsmDate(`${weekdayStart} ${startHour}-24:00; `);
+        setOsmDate((prev) => prev + ` ${weekdayStart} ${startHour}-24:00;`);
         for (let i = 1; i < nbJourDiff; i++) {
           const nextDay = DateTime.fromObject({ weekday: startDate.getDay() })
             .plus({ days: i })
             .toFormat("EEE")
             .substring(0, 2);
-          setOsmDate((prevValue) => prevValue + nextDay + ` 00:00-24:00; `);
+          setOsmDate((prevValue) => prevValue + nextDay + ` 00:00-24:00,`);
         }
-        setOsmDate((prevValue) => prevValue + `${weekdayEnd} 00:00-${endHour}`);
+        setOsmDate(
+          (prevValue) => prevValue + ` ${weekdayEnd} 00:00-${endHour};`
+        );
       }
     }
   }
 
   return (
-    <div className="flex flex-col">
-      <h1 className="mb-6">Calendrier</h1>
-      <label>
-        Start Date:
-        <input
-          type="datetime-local"
-          value={startDate}
-          onChange={handleStartDateChange}
-          className="bg-gray-100 px-2 py-1 rounded-md"
-        />
-      </label>
+    <div className="mt-60 flex flex-col w-auto lg:w-1/4">
+      <label>Start Date:</label>
+      <input
+        type="datetime-local"
+        value={startDate}
+        onChange={handleStartDateChange}
+        className="bg-gray-100 px-2 py-1 mt-2 rounded-md"
+      />
       <br />
-      <label>
-        End Date:
-        <input
-          type="datetime-local"
-          value={endDate}
-          onChange={handleEndDateChange}
-          className="bg-gray-100 px-2 py-1 rounded-md"
-        />
-      </label>
+      <label>End Date:</label>
+      <input
+        type="datetime-local"
+        value={endDate}
+        onChange={handleEndDateChange}
+        className="bg-gray-100 px-2 py-1 mt-2 rounded-md"
+      />
       <button
         onClick={() => getOsmDate(new Date(startDate), new Date(endDate))}
         className="mt-14 px-4 py-2 rounded-md bg-green-200 hover:bg-green-300"
