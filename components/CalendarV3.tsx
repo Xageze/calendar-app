@@ -41,42 +41,44 @@ const hours = [
 ];
 
 export const CalendarV3: React.FC = () => {
-  const [mouseDown, setMouseDown] = useState<string>("");
-  const [mouseUp, setMouseUp] = useState<string>("");
-  const [events, setEvents] = useState<{}[]>([]);
+  const [mouseDown, setMouseDown] = useState("");
+  const [mouseUp, setMouseUp] = useState("");
+  const [events, setEvents] = useState<{ start: Date; end: Date }[]>([]);
   const [oh, setOh] = useState<opening_hours | string>("");
 
   useMemo(() => {
     if (!mouseDown || !mouseUp) return false;
-    const dateMouseDown = DateTime.fromFormat(mouseDown, "EEE HH'h'", {
-      locale: "fr",
-    });
-    const dateMouseUp = DateTime.fromFormat(mouseUp, "EEE HH'h'", {
-      locale: "fr",
-    });
+
+    let dateRangeStart = DateTime.fromFormat(
+      mouseDown,
+      "EEEE HH'h'"
+    ).toJSDate();
+
+    let dateRangeEnd = DateTime.fromFormat(mouseUp, "EEEE HH'h'").toJSDate();
+
+    if (dateRangeStart > dateRangeEnd) {
+      let tempDateRangeStart = dateRangeStart;
+      dateRangeStart = dateRangeEnd;
+      dateRangeEnd = tempDateRangeStart;
+    }
 
     setEvents((prev) => [
       ...prev,
       {
-        start:
-          dateMouseDown.toFormat("EEE", { locale: "en" }).substring(0, 2) +
-          dateMouseUp.toFormat(" HH", { locale: "en" }),
-        end:
-          dateMouseUp.toFormat("EEE", { locale: "en" }).substring(0, 2) +
-          // TODO Add minute ?
-          dateMouseUp.toFormat(" HH", { locale: "en" }),
+        start: dateRangeStart,
+        end: dateRangeEnd,
       },
     ]);
+    getOsmDate(dateRangeStart, dateRangeEnd);
 
-    getOsmDate(dateMouseDown.toJSDate(), dateMouseUp.toJSDate());
-
-    return true;
+    return;
     // TODO gérer tableau de dépendance
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseUp]);
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     setOh(e.target.value);
-    setEvents([]);
+
     // set new Event from OS input value
     setEvents(
       new opening_hours(e.target.value)
@@ -86,12 +88,28 @@ export const CalendarV3: React.FC = () => {
         )
         .map(([start, end]) => {
           return {
-            title: "",
             start,
             end,
           };
         })
     );
+  }
+
+  function handleinDateRange(day: string, hour: string) {
+    hour = hour.substring(0, 2);
+    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE HH").toJSDate();
+
+    if (events.length === 0) {
+      return false;
+    }
+
+    for (let i = 0; i < events.length; i++) {
+      if (events[i].start <= tdDate && tdDate <= events[i].end) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   function getOsmDate(startDate: Date, endDate: Date) {
@@ -128,8 +146,6 @@ export const CalendarV3: React.FC = () => {
     }
   }
 
-  console.log(events);
-
   return (
     <div>
       <div className="flex space-x-10 mt-10">
@@ -150,7 +166,7 @@ export const CalendarV3: React.FC = () => {
           Clear
         </button>
       </div>
-      <table className="my-10">
+      <table className="my-4">
         <thead>
           <tr>
             <th className="w-10"></th>
@@ -166,55 +182,60 @@ export const CalendarV3: React.FC = () => {
       <div>
         <table>
           <tbody>
-            {hours.map((hour) => {
-              return (
-                <tr key={hour} className="">
-                  <td className="w-10">{hour}</td>
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Lun"}
-                    hour={hour}
-                  />
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Mar"}
-                    hour={hour}
-                  />
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Mer"}
-                    hour={hour}
-                  />
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Jeu"}
-                    hour={hour}
-                  />
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Ven"}
-                    hour={hour}
-                  />
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Sam"}
-                    hour={hour}
-                  />
-                  <CustomTd
-                    setMouseDown={setMouseDown}
-                    setMouseUp={setMouseUp}
-                    day={"Dim"}
-                    hour={hour}
-                  />
-                </tr>
-              );
-            })}
+            {hours.map((hour) => (
+              <tr key={hour}>
+                <td className="w-10">{hour}</td>
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Monday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Monday", hour)}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Tuesday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Tuesday", hour)}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Wednesday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Wednesday", hour)}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Thursday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Thursday", hour)}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Friday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Friday", hour)}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Saturday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Saturday", hour)}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  day={"Sunday"}
+                  hour={hour}
+                  inDateRange={handleinDateRange("Sunday", hour)}
+                />
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

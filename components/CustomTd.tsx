@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import React from "react";
 
 type Props = {
@@ -5,6 +6,7 @@ type Props = {
   setMouseUp: React.Dispatch<React.SetStateAction<string>>;
   day: string;
   hour: string;
+  inDateRange?: boolean;
 };
 
 export const CustomTd: React.FC<Props> = ({
@@ -12,12 +14,14 @@ export const CustomTd: React.FC<Props> = ({
   setMouseUp,
   day,
   hour,
+  inDateRange,
 }) => {
   return (
-    <td
+    <motion.td
       onMouseDown={() => setMouseDown(day + " " + hour)}
       onMouseUp={() => setMouseUp(day + " " + hour)}
       className={"w-24 h-8 border hover:bg-gray-100 select-none"}
-    ></td>
+      style={inDateRange ? { backgroundColor: "#1B71FF" } : {}}
+    ></motion.td>
   );
 };
