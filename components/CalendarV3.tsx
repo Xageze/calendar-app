@@ -12,33 +12,16 @@ const days = [
   "Samedi",
   "Dimanche",
 ];
-const hours = [
-  "00h",
-  "01h",
-  "02h",
-  "03h",
-  "04h",
-  "05h",
-  "06h",
-  "07h",
-  "08h",
-  "09h",
-  "10h",
-  "11h",
-  "12h",
-  "13h",
-  "14h",
-  "15h",
-  "16h",
-  "17h",
-  "18h",
-  "19h",
-  "20h",
-  "21h",
-  "22h",
-  "23h",
-  "24h",
-];
+const hours: string[] = [];
+for (let hour = 0; hour < 24; hour++) {
+  const hourString = hour.toString().padStart(2, "0");
+  for (let minute = 0; minute < 60; minute += 15) {
+    const minuteString = minute.toString().padStart(2, "0");
+    hours.push(hourString + ":" + minuteString);
+  }
+}
+
+hours.push("24:00");
 
 export const CalendarV3: React.FC = () => {
   const [mousePressed, setMousePressed] = useState(false);
@@ -55,12 +38,8 @@ export const CalendarV3: React.FC = () => {
   useMemo(() => {
     if (!mouseDown || !mouseUp) return false;
 
-    let dateRangeStart = DateTime.fromFormat(
-      mouseDown,
-      "EEEE HH'h'"
-    ).toJSDate();
-
-    let dateRangeEnd = DateTime.fromFormat(mouseUp, "EEEE HH'h'").toJSDate();
+    let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
+    let dateRangeEnd = DateTime.fromFormat(mouseUp, "EEEE T").toJSDate();
 
     if (dateRangeStart > dateRangeEnd) {
       let tempDateRangeStart = dateRangeStart;
@@ -104,8 +83,7 @@ export const CalendarV3: React.FC = () => {
 
   // Change TD Color if TD is in events Date Range
   function handleinDateRange(day: string, hour: string) {
-    hour = hour.substring(0, 2);
-    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE HH").toJSDate();
+    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
 
     if (events.length === 0) {
       return false;
@@ -121,8 +99,7 @@ export const CalendarV3: React.FC = () => {
 
   // Change TD Color if TD is in Hovering Event Date Range
   function handleTDHoverColor(day: string, hour: string) {
-    hour = hour.substring(0, 2);
-    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE HH").toJSDate();
+    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
 
     if (hoveringEvent === undefined) {
       return false;
@@ -137,13 +114,10 @@ export const CalendarV3: React.FC = () => {
   // Create Hover Date Range when the mouse move hover TD && mousePressed
   function handleMouseMove(day: string, hour: string) {
     if (mousePressed) {
-      let dateRangeStart = DateTime.fromFormat(
-        mouseDown,
-        "EEEE HH'h'"
-      ).toJSDate();
+      let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
       let dateRangeEnd = DateTime.fromFormat(
         day + " " + hour,
-        "EEEE HH'h'"
+        "EEEE T"
       ).toJSDate();
 
       if (dateRangeStart > dateRangeEnd) {
@@ -173,20 +147,20 @@ export const CalendarV3: React.FC = () => {
       endDateLuxon.diff(startDateLuxon, "days").days.toFixed(0)
     );
     if (startDateLuxon.hasSame(endDateLuxon, "day")) {
-      setOh((prev) => prev + ` ${weekdayStart} ${startHour}-${endHour};`);
+      setOh((prev) => prev + `${weekdayStart} ${startHour}-${endHour}; `);
     } else {
       if (startDateLuxon.hour >= endDateLuxon.hour && nbJourDiff === 1) {
-        setOh((prev) => prev + ` ${weekdayStart} ${startHour}-${endHour};`);
+        setOh((prev) => prev + `${weekdayStart} ${startHour}-${endHour}; `);
       } else {
-        setOh((prev) => prev + ` ${weekdayStart} ${startHour}-24:00;`);
+        setOh((prev) => prev + `${weekdayStart} ${startHour}-24:00; `);
         for (let i = 1; i < nbJourDiff; i++) {
           const nextDay = DateTime.fromObject({ weekday: startDate.getDay() })
             .plus({ days: i })
             .toFormat("EEE")
             .substring(0, 2);
-          setOh((prevValue) => prevValue + nextDay + ` 00:00-24:00;`);
+          setOh((prevValue) => prevValue + nextDay + `00:00-24:00; `);
         }
-        setOh((prevValue) => prevValue + ` ${weekdayEnd} 00:00-${endHour};`);
+        setOh((prevValue) => prevValue + `${weekdayEnd} 00:00-${endHour}; `);
       }
     }
   }
@@ -230,7 +204,7 @@ export const CalendarV3: React.FC = () => {
           <tbody>
             {hours.map((hour) => (
               <tr key={hour}>
-                <td className="w-10">{hour}</td>
+                <td className="w-10">{hour.endsWith("00") ? hour : ""}</td>
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}

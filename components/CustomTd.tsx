@@ -22,6 +22,7 @@ export const CustomTd: React.FC<Props> = ({
   inDateRange,
   isHovering,
 }) => {
+  isHovering && console.log("isHovering");
   return (
     <td
       onMouseDown={() => {
@@ -32,8 +33,8 @@ export const CustomTd: React.FC<Props> = ({
       }}
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
-        "w-24 h-7 border hover:cursor-pointer select-none",
-        isHovering && "bg-gray-100"
+        "w-24 h-6 border hover:cursor-pointer select-none",
+        isHovering && "bg-purple-100"
       )}
       style={inDateRange ? { backgroundColor: "#FFC289" } : {}}
     ></td>
