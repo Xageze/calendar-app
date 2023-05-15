@@ -136,7 +136,6 @@ export const CalendarV2: React.FC = () => {
         events={updatedEvents}
         startAccessor="start"
         endAccessor="end"
-        toolbar={false}
         showMultiDayTimes
         selectable
         onSelectSlot={(range) => handleSelecting(range)}

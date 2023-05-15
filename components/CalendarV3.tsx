@@ -204,7 +204,7 @@ export const CalendarV3: React.FC = () => {
           <tbody>
             {hours.map((hour) => (
               <tr key={hour}>
-                <td className="w-10">{hour.endsWith("00") ? hour : ""}</td>
+                <td className="w-10">{hour.endsWith("00") && hour}</td>
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
