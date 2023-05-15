@@ -41,11 +41,17 @@ const hours = [
 ];
 
 export const CalendarV3: React.FC = () => {
+  const [mousePressed, setMousePressed] = useState(false);
   const [mouseDown, setMouseDown] = useState("");
   const [mouseUp, setMouseUp] = useState("");
   const [events, setEvents] = useState<{ start: Date; end: Date }[]>([]);
+  const [hoveringEvent, setHoveringEvent] = useState<{
+    start: Date;
+    end: Date;
+  }>();
   const [oh, setOh] = useState<opening_hours | string>("");
 
+  // Create OSM & Events array when click release (MouseUp)
   useMemo(() => {
     if (!mouseDown || !mouseUp) return false;
 
@@ -76,6 +82,7 @@ export const CalendarV3: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseUp]);
 
+  // Create OSM when Input Change
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     setOh(e.target.value);
 
@@ -95,6 +102,7 @@ export const CalendarV3: React.FC = () => {
     );
   }
 
+  // Change TD Color if TD is in events Date Range
   function handleinDateRange(day: string, hour: string) {
     hour = hour.substring(0, 2);
     const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE HH").toJSDate();
@@ -108,10 +116,47 @@ export const CalendarV3: React.FC = () => {
         return true;
       }
     }
-
     return false;
   }
 
+  // Change TD Color if TD is in Hovering Event Date Range
+  function handleTDHoverColor(day: string, hour: string) {
+    hour = hour.substring(0, 2);
+    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE HH").toJSDate();
+
+    if (hoveringEvent === undefined) {
+      return false;
+    }
+
+    if (hoveringEvent.start <= tdDate && tdDate <= hoveringEvent.end) {
+      return true;
+    }
+    return false;
+  }
+
+  // Create Hover Date Range when the mouse move hover TD && mousePressed
+  function handleMouseMove(day: string, hour: string) {
+    if (mousePressed) {
+      let dateRangeStart = DateTime.fromFormat(
+        mouseDown,
+        "EEEE HH'h'"
+      ).toJSDate();
+      let dateRangeEnd = DateTime.fromFormat(
+        day + " " + hour,
+        "EEEE HH'h'"
+      ).toJSDate();
+
+      if (dateRangeStart > dateRangeEnd) {
+        let tempDateRangeStart = dateRangeStart;
+        dateRangeStart = dateRangeEnd;
+        dateRangeEnd = tempDateRangeStart;
+      }
+
+      setHoveringEvent({ start: dateRangeStart, end: dateRangeEnd });
+    }
+  }
+
+  // Create OSM Date format
   function getOsmDate(startDate: Date, endDate: Date) {
     const startDateISO = startDate.toISOString();
     const endDateISO = endDate.toISOString();
@@ -161,6 +206,7 @@ export const CalendarV3: React.FC = () => {
           onClick={() => {
             setEvents([]);
             setOh("");
+            setHoveringEvent(undefined);
           }}
         >
           Clear
@@ -188,51 +234,72 @@ export const CalendarV3: React.FC = () => {
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Monday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Monday", hour)}
+                  isHovering={handleTDHoverColor("Monday", hour)}
                 />
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Tuesday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Tuesday", hour)}
+                  isHovering={handleTDHoverColor("Tuesday", hour)}
                 />
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Wednesday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Wednesday", hour)}
+                  isHovering={handleTDHoverColor("Wednesday", hour)}
                 />
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Thursday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Thursday", hour)}
+                  isHovering={handleTDHoverColor("Thursday", hour)}
                 />
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Friday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Friday", hour)}
+                  isHovering={handleTDHoverColor("Friday", hour)}
                 />
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Saturday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Saturday", hour)}
+                  isHovering={handleTDHoverColor("Saturday", hour)}
                 />
                 <CustomTd
                   setMouseDown={setMouseDown}
                   setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
                   day={"Sunday"}
                   hour={hour}
                   inDateRange={handleinDateRange("Sunday", hour)}
+                  isHovering={handleTDHoverColor("Sunday", hour)}
                 />
               </tr>
             ))}

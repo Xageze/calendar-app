@@ -1,27 +1,41 @@
-import { motion } from "framer-motion";
 import React from "react";
+import { clsx } from "clsx";
 
 type Props = {
   setMouseDown: React.Dispatch<React.SetStateAction<string>>;
   setMouseUp: React.Dispatch<React.SetStateAction<string>>;
+  setMousePressed: React.Dispatch<React.SetStateAction<boolean>>;
+  handleMouseMove: (day: string, hour: string) => void;
   day: string;
   hour: string;
   inDateRange?: boolean;
+  isHovering?: boolean;
 };
 
 export const CustomTd: React.FC<Props> = ({
   setMouseDown,
   setMouseUp,
+  setMousePressed,
+  handleMouseMove,
   day,
   hour,
   inDateRange,
+  isHovering,
 }) => {
   return (
-    <motion.td
-      onMouseDown={() => setMouseDown(day + " " + hour)}
-      onMouseUp={() => setMouseUp(day + " " + hour)}
-      className={"w-24 h-8 border hover:bg-gray-100 select-none"}
-      style={inDateRange ? { backgroundColor: "#1B71FF" } : {}}
-    ></motion.td>
+    <td
+      onMouseDown={() => {
+        setMouseDown(day + " " + hour), setMousePressed(true);
+      }}
+      onMouseUp={() => {
+        setMouseUp(day + " " + hour), setMousePressed(false);
+      }}
+      onMouseOver={() => handleMouseMove(day, hour)}
+      className={clsx(
+        "w-24 h-7 border hover:cursor-pointer select-none",
+        isHovering && "bg-gray-100"
+      )}
+      style={inDateRange ? { backgroundColor: "#FFC289" } : {}}
+    ></td>
   );
 };
