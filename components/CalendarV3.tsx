@@ -166,8 +166,8 @@ export const CalendarV3: React.FC = () => {
   }
 
   return (
-    <div>
-      <div className="flex space-x-10 mt-10">
+    <div className="w-full flex flex-col items-center justify-center">
+      <div className="flex space-x-10 py-10">
         <input
           className="w-full mb-10 px-4 py-2 bg-gray-50 border border-black rounded-md text-center tracking-wider"
           value={oh.toString()}
@@ -186,12 +186,13 @@ export const CalendarV3: React.FC = () => {
           Clear
         </button>
       </div>
-      <table className="my-4">
+      {/* CALENDAR HEADER */}
+      <table className="w-[80%] bg-purple-400/20">
         <thead>
           <tr>
-            <th className="w-10"></th>
+            <th className="w-[12.5%]" />
             {days.map((day) => (
-              <th key={day} className="w-24">
+              <th key={day} className="text-xs sm:text-sm w-[12.5%]">
                 {day}
               </th>
             ))}
@@ -199,87 +200,183 @@ export const CalendarV3: React.FC = () => {
         </thead>
       </table>
 
-      <div>
-        <table>
-          <tbody>
-            {hours.map((hour) => (
-              <tr key={hour}>
-                <td className="w-10">{hour.endsWith("00") && hour}</td>
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Monday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Monday", hour)}
-                  isHovering={handleTDHoverColor("Monday", hour)}
-                />
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Tuesday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Tuesday", hour)}
-                  isHovering={handleTDHoverColor("Tuesday", hour)}
-                />
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Wednesday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Wednesday", hour)}
-                  isHovering={handleTDHoverColor("Wednesday", hour)}
-                />
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Thursday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Thursday", hour)}
-                  isHovering={handleTDHoverColor("Thursday", hour)}
-                />
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Friday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Friday", hour)}
-                  isHovering={handleTDHoverColor("Friday", hour)}
-                />
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Saturday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Saturday", hour)}
-                  isHovering={handleTDHoverColor("Saturday", hour)}
-                />
-                <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
-                  day={"Sunday"}
-                  hour={hour}
-                  inDateRange={handleinDateRange("Sunday", hour)}
-                  isHovering={handleTDHoverColor("Sunday", hour)}
-                />
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* CALENDAR BODY */}
+      <table className="relative w-[80%]">
+        {events.map((event, index) => {
+          // TODO Améliorer cette magouille ?
+          const minuteOffsets = {
+            0: 0,
+            15: 28,
+            30: 56,
+            45: 84,
+          };
+
+          const topOffset =
+            event.start.getHours() * 112 +
+            minuteOffsets[event.start.getMinutes() as 0 | 15 | 30 | 45];
+
+          const leftOffset = DateTime.fromJSDate(event.start).weekday;
+
+          // IF SAME DAY
+          if (event.start.getDay() === event.end.getDay()) {
+            const minutesDiff = DateTime.fromJSDate(event.end).diff(
+              DateTime.fromJSDate(event.start),
+              "minutes"
+            ).minutes;
+
+            return (
+              <div
+                key={index}
+                className={"absolute w-[12.5%] bg-green-200 z-10"}
+                style={{
+                  marginTop: `${topOffset}px`,
+                  marginLeft: `${leftOffset * 12.5}%`,
+                  height: `${28 + (minutesDiff / 15) * 28}px`,
+                }}
+              />
+            );
+          }
+          // IF NOT SAME DAY
+          if (event.start.getDay() !== event.end.getDay()) {
+            const dayDiff =
+              DateTime.fromJSDate(event.end).weekday -
+              DateTime.fromJSDate(event.start).weekday;
+
+            const elements = [];
+            for (let index = 0; index <= dayDiff; index++) {
+              if (index === 0) {
+                elements.push(
+                  <div
+                    key={index}
+                    className={"absolute w-[12.5%] bg-purple-200 z-10"}
+                    style={{
+                      top: `${topOffset}px`,
+                      left: `${leftOffset * 12.5}%`,
+                      height: `${2716 - topOffset}px`,
+                    }}
+                  />
+                );
+              } else if (index !== dayDiff) {
+                elements.push(
+                  <div
+                    key={index}
+                    className={"absolute w-[12.5%] bg-purple-200 z-10"}
+                    style={{
+                      left: `${(index + leftOffset) * 12.5}%`,
+                      height: `${2716}px`,
+                    }}
+                  />
+                );
+              } else {
+                const lastDivBottomOffset =
+                  DateTime.fromJSDate(event.end).hour * 112 +
+                  minuteOffsets[event.end.getMinutes() as 0 | 15 | 30 | 45];
+
+                elements.push(
+                  <div
+                    key={index}
+                    className={"absolute w-[12.5%] bg-purple-200 z-10"}
+                    style={{
+                      left: `${(index + leftOffset) * 12.5}%`,
+                      height: `${28 + lastDivBottomOffset}px`,
+                    }}
+                  />
+                );
+              }
+
+              // elements.push(
+              //   <div
+              //     key={index}
+              //     className={"absolute w-[12.5%] bg-purple-200 z-10"}
+              //     style={{
+              //       top: `${topOffset}px`,
+              //       left: `${leftOffset * 12.5}%`,
+              //       height: `${2716 - topOffset}px`,
+              //     }}
+              //   />
+              // );
+            }
+            return elements;
+          }
+        })}
+        <tbody>
+          {hours.map((hour) => (
+            <tr key={hour}>
+              <td className="w-[12.5%]">{hour.endsWith("00") && hour}</td>
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Monday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Monday", hour)}
+                isHovering={handleTDHoverColor("Monday", hour)}
+              />
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Tuesday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Tuesday", hour)}
+                isHovering={handleTDHoverColor("Tuesday", hour)}
+              />
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Wednesday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Wednesday", hour)}
+                isHovering={handleTDHoverColor("Wednesday", hour)}
+              />
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Thursday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Thursday", hour)}
+                isHovering={handleTDHoverColor("Thursday", hour)}
+              />
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Friday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Friday", hour)}
+                isHovering={handleTDHoverColor("Friday", hour)}
+              />
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Saturday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Saturday", hour)}
+                isHovering={handleTDHoverColor("Saturday", hour)}
+              />
+              <CustomTd
+                setMouseDown={setMouseDown}
+                setMouseUp={setMouseUp}
+                setMousePressed={setMousePressed}
+                handleMouseMove={handleMouseMove}
+                day={"Sunday"}
+                hour={hour}
+                inDateRange={handleinDateRange("Sunday", hour)}
+                isHovering={handleTDHoverColor("Sunday", hour)}
+              />
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
