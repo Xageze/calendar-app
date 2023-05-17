@@ -210,21 +210,25 @@ export const CalendarV3: React.FC = () => {
               DateTime.fromJSDate(event.start),
               "minutes"
             ).minutes;
-
+            // DIV CASE A
             return (
               <div
                 key={index}
+                onClick={() => {
+                  events.splice(index, 1);
+                  setEvents([...events]);
+                }}
                 className={
                   "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                 }
                 style={{
-                  marginTop: `${topOffset}px`,
+                  marginTop: `${5 + topOffset}px`,
                   marginLeft: `${leftOffset * 12.5 + 0.5}%`,
-                  height: `${28 + (minutesDiff / 15) * 28}px`,
+                  height: `${28 + (minutesDiff / 15) * 28 - 10}px`,
                 }}
               >
                 {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                  " - " +
+                  " A " +
                   DateTime.fromJSDate(event.end).toFormat("HH:mm")}
               </div>
             );
@@ -236,38 +240,49 @@ export const CalendarV3: React.FC = () => {
               DateTime.fromJSDate(event.start).weekday;
 
             const elements = [];
-            for (let index = 0; index <= dayDiff; index++) {
-              if (index === 0) {
+            for (let i = 0; i <= dayDiff; i++) {
+              if (i === 0) {
                 elements.push(
+                  // DIV CASE B
                   <div
-                    key={index}
+                    key={i}
+                    onClick={() => {
+                      events.splice(index, 1);
+                      setEvents([...events]);
+                    }}
                     className={
                       "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: `${topOffset}px`,
+                      top: `${5 + topOffset}px`,
                       left: `${leftOffset * 12.5 + 0.5}%`,
-                      height: `${2716 - topOffset}px`,
+                      height: `${2706 - topOffset}px`,
                     }}
                   >
                     {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                      " - " +
+                      " B " +
                       "00:00"}
                   </div>
                 );
-              } else if (index !== dayDiff) {
+              } else if (i !== dayDiff) {
                 elements.push(
+                  // DIV CASE C
                   <div
-                    key={index}
+                    key={i}
+                    onClick={() => {
+                      events.splice(index, 1);
+                      setEvents([...events]);
+                    }}
                     className={
                       "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      left: `${(index + leftOffset) * 12.5 + 0.5}%`,
-                      height: `${2716}px`,
+                      top: "5px",
+                      left: `${(i + leftOffset) * 12.5 + 0.5}%`,
+                      height: `${2706}px`,
                     }}
                   >
-                    {"00:00 - 00:00"}
+                    {"00:00 C 00:00"}
                   </div>
                 );
               } else {
@@ -276,18 +291,23 @@ export const CalendarV3: React.FC = () => {
                   minuteOffsets[event.end.getMinutes() as 0 | 15 | 30 | 45];
 
                 elements.push(
+                  // DIV CASE D
                   <div
-                    key={index}
+                    key={i}
+                    onClick={() => {
+                      events.splice(index, 1);
+                      setEvents([...events]);
+                    }}
                     className={
                       "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      left: `${(index + leftOffset) * 12.5 + 0.5}%`,
-                      height: `${28 + lastDivBottomOffset}px`,
+                      top: "5px",
+                      left: `${(i + leftOffset) * 12.5 + 0.5}%`,
+                      height: `${28 + lastDivBottomOffset - 10}px`,
                     }}
                   >
-                    {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                      " - " +
+                    {"00:00 D " +
                       DateTime.fromJSDate(event.end).toFormat("HH:mm")}
                   </div>
                 );
