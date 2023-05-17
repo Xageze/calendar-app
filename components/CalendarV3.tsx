@@ -20,7 +20,6 @@ for (let hour = 0; hour < 24; hour++) {
     hours.push(hourString + ":" + minuteString);
   }
 }
-
 hours.push("24:00");
 
 export const CalendarV3: React.FC = () => {
@@ -81,32 +80,18 @@ export const CalendarV3: React.FC = () => {
     );
   }
 
-  // Change TD Color if TD is in events Date Range
-  function handleinDateRange(day: string, hour: string) {
-    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
-
-    if (events.length === 0) {
-      return false;
-    }
-
-    for (let i = 0; i < events.length; i++) {
-      if (events[i].start <= tdDate && tdDate <= events[i].end) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   // Change TD Color if TD is in Hovering Event Date Range
   function handleTDHoverColor(day: string, hour: string) {
-    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
+    if (mousePressed) {
+      const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
 
-    if (hoveringEvent === undefined) {
-      return false;
-    }
+      if (hoveringEvent === undefined) {
+        return false;
+      }
 
-    if (hoveringEvent.start <= tdDate && tdDate <= hoveringEvent.end) {
-      return true;
+      if (hoveringEvent.start <= tdDate && tdDate <= hoveringEvent.end) {
+        return true;
+      }
     }
     return false;
   }
@@ -167,7 +152,7 @@ export const CalendarV3: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="flex space-x-10 py-10">
+      <div className="flex space-x-10 py-10 w-[80%]">
         <input
           className="w-full mb-10 px-4 py-2 bg-gray-50 border border-black rounded-md text-center tracking-wider"
           value={oh.toString()}
@@ -186,13 +171,14 @@ export const CalendarV3: React.FC = () => {
           Clear
         </button>
       </div>
+
       {/* CALENDAR HEADER */}
       <table className="w-[80%] bg-purple-400/20">
         <thead>
           <tr>
             <th className="w-[12.5%]" />
             {days.map((day) => (
-              <th key={day} className="text-xs sm:text-sm w-[12.5%]">
+              <th key={day} className="text-xs sm:text-sm">
                 {day}
               </th>
             ))}
@@ -202,6 +188,7 @@ export const CalendarV3: React.FC = () => {
 
       {/* CALENDAR BODY */}
       <table className="relative w-[80%]">
+        {/* Date Range DIV Over my calendar  */}
         {events.map((event, index) => {
           // TODO Améliorer cette magouille ?
           const minuteOffsets = {
@@ -227,13 +214,19 @@ export const CalendarV3: React.FC = () => {
             return (
               <div
                 key={index}
-                className={"absolute w-[12.5%] bg-green-200 z-10"}
+                className={
+                  "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                }
                 style={{
                   marginTop: `${topOffset}px`,
-                  marginLeft: `${leftOffset * 12.5}%`,
+                  marginLeft: `${leftOffset * 12.5 + 0.5}%`,
                   height: `${28 + (minutesDiff / 15) * 28}px`,
                 }}
-              />
+              >
+                {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
+                  " - " +
+                  DateTime.fromJSDate(event.end).toFormat("HH:mm")}
+              </div>
             );
           }
           // IF NOT SAME DAY
@@ -248,24 +241,34 @@ export const CalendarV3: React.FC = () => {
                 elements.push(
                   <div
                     key={index}
-                    className={"absolute w-[12.5%] bg-purple-200 z-10"}
+                    className={
+                      "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                    }
                     style={{
                       top: `${topOffset}px`,
-                      left: `${leftOffset * 12.5}%`,
+                      left: `${leftOffset * 12.5 + 0.5}%`,
                       height: `${2716 - topOffset}px`,
                     }}
-                  />
+                  >
+                    {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
+                      " - " +
+                      "00:00"}
+                  </div>
                 );
               } else if (index !== dayDiff) {
                 elements.push(
                   <div
                     key={index}
-                    className={"absolute w-[12.5%] bg-purple-200 z-10"}
+                    className={
+                      "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                    }
                     style={{
-                      left: `${(index + leftOffset) * 12.5}%`,
+                      left: `${(index + leftOffset) * 12.5 + 0.5}%`,
                       height: `${2716}px`,
                     }}
-                  />
+                  >
+                    {"00:00 - 00:00"}
+                  </div>
                 );
               } else {
                 const lastDivBottomOffset =
@@ -275,26 +278,20 @@ export const CalendarV3: React.FC = () => {
                 elements.push(
                   <div
                     key={index}
-                    className={"absolute w-[12.5%] bg-purple-200 z-10"}
+                    className={
+                      "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                    }
                     style={{
-                      left: `${(index + leftOffset) * 12.5}%`,
+                      left: `${(index + leftOffset) * 12.5 + 0.5}%`,
                       height: `${28 + lastDivBottomOffset}px`,
                     }}
-                  />
+                  >
+                    {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
+                      " - " +
+                      DateTime.fromJSDate(event.end).toFormat("HH:mm")}
+                  </div>
                 );
               }
-
-              // elements.push(
-              //   <div
-              //     key={index}
-              //     className={"absolute w-[12.5%] bg-purple-200 z-10"}
-              //     style={{
-              //       top: `${topOffset}px`,
-              //       left: `${leftOffset * 12.5}%`,
-              //       height: `${2716 - topOffset}px`,
-              //     }}
-              //   />
-              // );
             }
             return elements;
           }
@@ -310,7 +307,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Monday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Monday", hour)}
                 isHovering={handleTDHoverColor("Monday", hour)}
               />
               <CustomTd
@@ -320,7 +316,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Tuesday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Tuesday", hour)}
                 isHovering={handleTDHoverColor("Tuesday", hour)}
               />
               <CustomTd
@@ -330,7 +325,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Wednesday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Wednesday", hour)}
                 isHovering={handleTDHoverColor("Wednesday", hour)}
               />
               <CustomTd
@@ -340,7 +334,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Thursday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Thursday", hour)}
                 isHovering={handleTDHoverColor("Thursday", hour)}
               />
               <CustomTd
@@ -350,7 +343,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Friday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Friday", hour)}
                 isHovering={handleTDHoverColor("Friday", hour)}
               />
               <CustomTd
@@ -360,7 +352,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Saturday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Saturday", hour)}
                 isHovering={handleTDHoverColor("Saturday", hour)}
               />
               <CustomTd
@@ -370,7 +361,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Sunday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Sunday", hour)}
                 isHovering={handleTDHoverColor("Sunday", hour)}
               />
             </tr>

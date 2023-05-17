@@ -8,7 +8,6 @@ type Props = {
   handleMouseMove: (day: string, hour: string) => void;
   day: string;
   hour: string;
-  inDateRange?: boolean;
   isHovering?: boolean;
 };
 
@@ -19,7 +18,6 @@ export const CustomTd: React.FC<Props> = ({
   handleMouseMove,
   day,
   hour,
-  inDateRange,
   isHovering,
 }) => {
   return (
@@ -35,7 +33,6 @@ export const CustomTd: React.FC<Props> = ({
         "w-[12.5%] h-7 border hover:cursor-pointer select-none",
         isHovering && "bg-purple-100"
       )}
-      style={inDateRange ? { backgroundColor: "#FFC289" } : {}}
-    ></td>
+    />
   );
 };
