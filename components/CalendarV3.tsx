@@ -68,7 +68,6 @@ export const CalendarV3: React.FC = () => {
     try {
       setGoodInputValue(true);
       // set new Event from OS input value
-
       setEvents(
         new opening_hours(e.target.value)
           .getOpenIntervals(
@@ -317,7 +316,9 @@ export const CalendarV3: React.FC = () => {
                     {"00:00 C 00:00"}
                   </div>
                 );
-              } else {
+              } else if (
+                DateTime.fromJSDate(event.end).toFormat("HH:mm") !== "00:00"
+              ) {
                 const lastDivBottomOffset =
                   DateTime.fromJSDate(event.end).hour * 112 +
                   minuteOffsets[event.end.getMinutes() as 0 | 15 | 30 | 45];
