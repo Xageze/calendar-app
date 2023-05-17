@@ -143,7 +143,7 @@ export const CalendarV3: React.FC = () => {
             .plus({ days: i })
             .toFormat("EEE")
             .substring(0, 2);
-          setOh((prevValue) => prevValue + nextDay + `00:00-24:00; `);
+          setOh((prevValue) => prevValue + nextDay + ` 00:00-24:00; `);
         }
         setOh((prevValue) => prevValue + `${weekdayEnd} 00:00-${endHour}; `);
       }
