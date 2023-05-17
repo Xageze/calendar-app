@@ -38,7 +38,7 @@ export const CustomTd: React.FC<Props> = ({
       className={clsx(
         "w-[12.5%] h-7 border select-none",
         isHovering && "bg-purple-100",
-        inDateRange && "cursor-not-allowed bg-green-200"
+        inDateRange && "cursor-not-allowed"
       )}
     />
   );
