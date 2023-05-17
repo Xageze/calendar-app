@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useMemo, useState } from "react";
+import opening_hours from "opening_hours";
 import { CustomTd } from "./CustomTd";
 import { DateTime } from "luxon";
-import opening_hours from "opening_hours";
 
 const days = [
   "Lundi",
@@ -31,7 +31,8 @@ export const CalendarV3: React.FC = () => {
     start: Date;
     end: Date;
   }>();
-  const [oh, setOh] = useState<opening_hours | string>("");
+  const [oh, setOh] = useState<string[]>([""]);
+  const [goodInputValue, setGoodInputValue] = useState(true);
 
   // Create OSM & Events array when click release (MouseUp)
   useMemo(() => {
@@ -62,22 +63,45 @@ export const CalendarV3: React.FC = () => {
 
   // Create OSM when Input Change
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setOh(e.target.value);
+    setOh(e.target.value.split(";"));
 
-    // set new Event from OS input value
-    setEvents(
-      new opening_hours(e.target.value)
-        .getOpenIntervals(
-          DateTime.now().startOf("week").toJSDate(),
-          DateTime.now().endOf("week").toJSDate()
-        )
-        .map(([start, end]) => {
-          return {
-            start,
-            end,
-          };
-        })
-    );
+    try {
+      setGoodInputValue(true);
+      // set new Event from OS input value
+
+      setEvents(
+        new opening_hours(e.target.value)
+          .getOpenIntervals(
+            DateTime.now().startOf("week").toJSDate(),
+            DateTime.now().endOf("week").toJSDate()
+          )
+          .map(([start, end]) => {
+            return {
+              start,
+              end,
+            };
+          })
+      );
+    } catch (error) {
+      setGoodInputValue(false);
+      console.log(error);
+    }
+  }
+
+  // Change TD Color if TD is in events Date Range
+  function handleinDateRange(day: string, hour: string) {
+    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
+
+    if (events.length === 0) {
+      return false;
+    }
+
+    for (let i = 0; i < events.length; i++) {
+      if (events[i].start <= tdDate && tdDate <= events[i].end) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // Change TD Color if TD is in Hovering Event Date Range
@@ -115,6 +139,10 @@ export const CalendarV3: React.FC = () => {
     }
   }
 
+  // TODO
+  // Recreate Events And OH when delete an event
+  function handleClickDeleteEvent() {}
+
   // Create OSM Date format
   function getOsmDate(startDate: Date, endDate: Date) {
     const startDateISO = startDate.toISOString();
@@ -132,30 +160,30 @@ export const CalendarV3: React.FC = () => {
       endDateLuxon.diff(startDateLuxon, "days").days.toFixed(0)
     );
     if (startDateLuxon.hasSame(endDateLuxon, "day")) {
-      setOh((prev) => prev + `${weekdayStart} ${startHour}-${endHour}; `);
+      setOh((prev) => [...prev, `${weekdayStart} ${startHour}-${endHour}`]);
     } else {
       if (startDateLuxon.hour >= endDateLuxon.hour && nbJourDiff === 1) {
-        setOh((prev) => prev + `${weekdayStart} ${startHour}-${endHour}; `);
+        setOh((prev) => [...prev, `${weekdayStart} ${startHour}-${endHour}`]);
       } else {
-        setOh((prev) => prev + `${weekdayStart} ${startHour}-24:00; `);
+        setOh((prev) => [...prev, `${weekdayStart} ${startHour}-24:00`]);
         for (let i = 1; i < nbJourDiff; i++) {
           const nextDay = DateTime.fromObject({ weekday: startDate.getDay() })
             .plus({ days: i })
             .toFormat("EEE")
             .substring(0, 2);
-          setOh((prevValue) => prevValue + nextDay + ` 00:00-24:00; `);
+          setOh((prev) => [...prev, nextDay + ` 00:00-24:00`]);
         }
-        setOh((prevValue) => prevValue + `${weekdayEnd} 00:00-${endHour}; `);
+        setOh((prev) => [...prev, `${weekdayEnd} 00:00-${endHour}`]);
       }
     }
   }
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="flex space-x-10 py-10 w-[80%]">
+      <div className="flex space-x-10 pt-10 w-[80%]">
         <input
-          className="w-full mb-10 px-4 py-2 bg-gray-50 border border-black rounded-md text-center tracking-wider"
-          value={oh.toString()}
+          className="w-full px-4 py-2 bg-gray-50 border border-black rounded-md text-center tracking-wider"
+          value={oh.join(";")}
           onChange={(e) => {
             handleInputChange(e);
           }}
@@ -164,13 +192,17 @@ export const CalendarV3: React.FC = () => {
           className="px-8 py-2 h-min bg-orange-500 hover:bg-orange-600 rounded-lg text-white font-semibold"
           onClick={() => {
             setEvents([]);
-            setOh("");
+            setOh([]);
             setHoveringEvent(undefined);
+            setGoodInputValue(true);
           }}
         >
           Clear
         </button>
       </div>
+      <p className="mb-10 text-sm font-semibold tracking-wider text-red-500">
+        {goodInputValue ? "" : "Veuillez entrer un format OSM valide"}
+      </p>
 
       {/* CALENDAR HEADER */}
       <table className="w-[80%] bg-purple-400/20">
@@ -187,7 +219,7 @@ export const CalendarV3: React.FC = () => {
       </table>
 
       {/* CALENDAR BODY */}
-      <table className="relative w-[80%]">
+      <table className="relative mb-10 w-[80%]">
         {/* Date Range DIV Over my calendar  */}
         {events.map((event, index) => {
           // TODO Améliorer cette magouille ?
@@ -327,6 +359,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Monday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Monday", hour)}
                 isHovering={handleTDHoverColor("Monday", hour)}
               />
               <CustomTd
@@ -336,6 +369,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Tuesday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Tuesday", hour)}
                 isHovering={handleTDHoverColor("Tuesday", hour)}
               />
               <CustomTd
@@ -345,6 +379,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Wednesday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Wednesday", hour)}
                 isHovering={handleTDHoverColor("Wednesday", hour)}
               />
               <CustomTd
@@ -354,6 +389,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Thursday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Thursday", hour)}
                 isHovering={handleTDHoverColor("Thursday", hour)}
               />
               <CustomTd
@@ -363,6 +399,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Friday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Friday", hour)}
                 isHovering={handleTDHoverColor("Friday", hour)}
               />
               <CustomTd
@@ -372,6 +409,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Saturday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Saturday", hour)}
                 isHovering={handleTDHoverColor("Saturday", hour)}
               />
               <CustomTd
@@ -381,6 +419,7 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Sunday"}
                 hour={hour}
+                inDateRange={handleinDateRange("Sunday", hour)}
                 isHovering={handleTDHoverColor("Sunday", hour)}
               />
             </tr>
