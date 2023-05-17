@@ -178,7 +178,7 @@ export const CalendarV3: React.FC = () => {
           <tr>
             <th className="w-[12.5%]" />
             {days.map((day) => (
-              <th key={day} className="text-xs sm:text-sm">
+              <th key={day} className="w-[12.5%] text-xs sm:text-sm">
                 {day}
               </th>
             ))}
