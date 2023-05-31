@@ -1,7 +1,9 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import React, { ChangeEvent, useMemo, useState } from "react";
 import opening_hours from "opening_hours";
 import { CustomTd } from "./CustomTd";
 import { DateTime } from "luxon";
+import createOsmFormat from "@/utils/createOsmFormat";
+import handleClickDeleteDiv from "@/utils/handleClickDeleteDiv";
 
 const days = [
   "Lundi",
@@ -41,6 +43,7 @@ export const CalendarV3: React.FC = () => {
     let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
     let dateRangeEnd = DateTime.fromFormat(mouseUp, "EEEE T").toJSDate();
 
+    // If you select a date range from end date to start date, it will swap them
     if (dateRangeStart > dateRangeEnd) {
       let tempDateRangeStart = dateRangeStart;
       dateRangeStart = dateRangeEnd;
@@ -54,8 +57,8 @@ export const CalendarV3: React.FC = () => {
         end: dateRangeEnd,
       },
     ]);
-    getOsmDate(dateRangeStart, dateRangeEnd);
 
+    createOsmFormat(dateRangeStart, dateRangeEnd, setOh);
     return;
     // TODO gérer tableau de dépendance
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,58 +141,6 @@ export const CalendarV3: React.FC = () => {
     }
   }
 
-  // TODO
-  // Recreate Events And OH when delete an event
-  function handleClickDeleteEvent(index: number) {
-    let ohOffset = 0;
-    // If selected div is not the first one
-    for (let i = 0; i < index; i++) {
-      // for each event until it reach the selected one add the number of days between the start and the end to get offset
-      const start = DateTime.fromJSDate(events[i].start).startOf("day");
-      const end = DateTime.fromJSDate(events[i].end).startOf("day");
-      ohOffset += 1 + end.diff(start, "days").days;
-    }
-    const start = DateTime.fromJSDate(events[index].start).startOf("day");
-    const end = DateTime.fromJSDate(events[index].end).startOf("day");
-    const deleteCount = end.diff(start, "days").days + 1;
-    oh.splice(ohOffset, deleteCount);
-  }
-
-  // Create OSM Date format
-  function getOsmDate(startDate: Date, endDate: Date) {
-    const startDateISO = startDate.toISOString();
-    const endDateISO = endDate.toISOString();
-
-    const startDateLuxon = DateTime.fromISO(startDateISO);
-    const endDateLuxon = DateTime.fromISO(endDateISO);
-
-    const weekdayStart = startDateLuxon.toFormat("EEE").substring(0, 2);
-    const weekdayEnd = endDateLuxon.toFormat("EEE").substring(0, 2);
-    const startHour = startDateLuxon.toFormat("HH:mm");
-    const endHour = endDateLuxon.toFormat("HH:mm");
-
-    const nbJourDiff = parseInt(
-      endDateLuxon.diff(startDateLuxon, "days").days.toFixed(0)
-    );
-    if (startDateLuxon.hasSame(endDateLuxon, "day")) {
-      setOh((prev) => [...prev, `${weekdayStart} ${startHour}-${endHour}`]);
-    } else {
-      if (startDateLuxon.hour >= endDateLuxon.hour && nbJourDiff === 1) {
-        setOh((prev) => [...prev, `${weekdayStart} ${startHour}-${endHour}`]);
-      } else {
-        setOh((prev) => [...prev, `${weekdayStart} ${startHour}-24:00`]);
-        for (let i = 1; i < nbJourDiff; i++) {
-          const nextDay = DateTime.fromObject({ weekday: startDate.getDay() })
-            .plus({ days: i })
-            .toFormat("EEE")
-            .substring(0, 2);
-          setOh((prev) => [...prev, nextDay + ` 00:00-24:00`]);
-        }
-        setOh((prev) => [...prev, `${weekdayEnd} 00:00-${endHour}`]);
-      }
-    }
-  }
-
   return (
     <div className="w-full flex flex-col items-center justify-center">
       {/* OSM INPUT + CLEAR BUTTON */}
@@ -261,7 +212,7 @@ export const CalendarV3: React.FC = () => {
               <div
                 key={index}
                 onClick={() => {
-                  handleClickDeleteEvent(index);
+                  handleClickDeleteDiv(index, events, oh);
                   events.splice(index, 1);
                   setEvents([...events]);
                 }}
@@ -294,7 +245,7 @@ export const CalendarV3: React.FC = () => {
                   <div
                     key={i}
                     onClick={() => {
-                      handleClickDeleteEvent(index);
+                      handleClickDeleteDiv(index, events, oh);
                       events.splice(index, 1);
                       setEvents([...events]);
                     }}
@@ -318,7 +269,7 @@ export const CalendarV3: React.FC = () => {
                   <div
                     key={i}
                     onClick={() => {
-                      handleClickDeleteEvent(index);
+                      handleClickDeleteDiv(index, events, oh);
                       events.splice(index, 1);
                       setEvents([...events]);
                     }}
@@ -346,7 +297,7 @@ export const CalendarV3: React.FC = () => {
                   <div
                     key={i}
                     onClick={() => {
-                      handleClickDeleteEvent(index);
+                      handleClickDeleteDiv(index, events, oh);
                       events.splice(index, 1);
                       setEvents([...events]);
                     }}
