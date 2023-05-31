@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useMemo, useState } from "react";
+import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import opening_hours from "opening_hours";
 import { CustomTd } from "./CustomTd";
 import { DateTime } from "luxon";
@@ -31,8 +31,8 @@ export const CalendarV3: React.FC = () => {
     start: Date;
     end: Date;
   }>();
-  const [oh, setOh] = useState<string[]>([""]);
-  const [goodInputValue, setGoodInputValue] = useState(true);
+  const [oh, setOh] = useState<string[]>([]);
+  const [goodOSMFormat, setGoodOSMFormat] = useState(true);
 
   // Create OSM & Events array when click release (MouseUp)
   useMemo(() => {
@@ -66,7 +66,7 @@ export const CalendarV3: React.FC = () => {
     setOh(e.target.value.split(";"));
 
     try {
-      setGoodInputValue(true);
+      setGoodOSMFormat(true);
       // set new Event from OS input value
       setEvents(
         new opening_hours(e.target.value)
@@ -82,7 +82,7 @@ export const CalendarV3: React.FC = () => {
           })
       );
     } catch (error) {
-      setGoodInputValue(false);
+      setGoodOSMFormat(false);
       console.log(error);
     }
   }
@@ -140,7 +140,20 @@ export const CalendarV3: React.FC = () => {
 
   // TODO
   // Recreate Events And OH when delete an event
-  function handleClickDeleteEvent() {}
+  function handleClickDeleteEvent(index: number) {
+    let ohOffset = 0;
+    // If selected div is not the first one
+    for (let i = 0; i < index; i++) {
+      // for each event until it reach the selected one add the number of days between the start and the end to get offset
+      const start = DateTime.fromJSDate(events[i].start).startOf("day");
+      const end = DateTime.fromJSDate(events[i].end).startOf("day");
+      ohOffset += 1 + end.diff(start, "days").days;
+    }
+    const start = DateTime.fromJSDate(events[index].start).startOf("day");
+    const end = DateTime.fromJSDate(events[index].end).startOf("day");
+    const deleteCount = end.diff(start, "days").days + 1;
+    oh.splice(ohOffset, deleteCount);
+  }
 
   // Create OSM Date format
   function getOsmDate(startDate: Date, endDate: Date) {
@@ -179,7 +192,8 @@ export const CalendarV3: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <div className="flex space-x-10 pt-10 w-[80%]">
+      {/* OSM INPUT + CLEAR BUTTON */}
+      <div className="flex space-x-4 pt-10 w-[80%]">
         <input
           className="w-full px-4 py-2 bg-gray-50 border border-black rounded-md text-center tracking-wider"
           value={oh.join(";")}
@@ -187,20 +201,21 @@ export const CalendarV3: React.FC = () => {
             handleInputChange(e);
           }}
         />
+
         <button
           className="px-8 py-2 h-min bg-orange-500 hover:bg-orange-600 rounded-lg text-white font-semibold"
           onClick={() => {
             setEvents([]);
             setOh([]);
             setHoveringEvent(undefined);
-            setGoodInputValue(true);
+            setGoodOSMFormat(true);
           }}
         >
           Clear
         </button>
       </div>
       <p className="mb-10 text-sm font-semibold tracking-wider text-red-500">
-        {goodInputValue ? "" : "Veuillez entrer un format OSM valide"}
+        {goodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
       </p>
 
       {/* CALENDAR HEADER */}
@@ -246,6 +261,7 @@ export const CalendarV3: React.FC = () => {
               <div
                 key={index}
                 onClick={() => {
+                  handleClickDeleteEvent(index);
                   events.splice(index, 1);
                   setEvents([...events]);
                 }}
@@ -278,6 +294,7 @@ export const CalendarV3: React.FC = () => {
                   <div
                     key={i}
                     onClick={() => {
+                      handleClickDeleteEvent(index);
                       events.splice(index, 1);
                       setEvents([...events]);
                     }}
@@ -301,6 +318,7 @@ export const CalendarV3: React.FC = () => {
                   <div
                     key={i}
                     onClick={() => {
+                      handleClickDeleteEvent(index);
                       events.splice(index, 1);
                       setEvents([...events]);
                     }}
@@ -328,6 +346,7 @@ export const CalendarV3: React.FC = () => {
                   <div
                     key={i}
                     onClick={() => {
+                      handleClickDeleteEvent(index);
                       events.splice(index, 1);
                       setEvents([...events]);
                     }}
