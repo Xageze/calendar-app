@@ -71,17 +71,23 @@ export const CalendarV3: React.FC = () => {
 
     // Create Events Array
     const ohArray = e.target.value.split(";");
-    setEvents(
-      ohArray
-        .filter((yay) => yay.trim() !== "")
-        .map((yay) => {
-          const EventFormat = new opening_hours(yay).getOpenIntervals(
-            DateTime.now().startOf("week").toJSDate(),
-            DateTime.now().endOf("week").toJSDate()
-          );
-          return { start: EventFormat[0][0], end: EventFormat[0][1] };
-        })
-    );
+    try {
+      setGoodOSMFormat(true);
+      setEvents(
+        ohArray
+          .filter((yay) => yay.trim() !== "")
+          .map((yay) => {
+            const EventFormat = new opening_hours(yay).getOpenIntervals(
+              DateTime.now().startOf("week").toJSDate(),
+              DateTime.now().endOf("week").toJSDate()
+            );
+            return { start: EventFormat[0][0], end: EventFormat[0][1] };
+          })
+      );
+    } catch (error) {
+      setGoodOSMFormat(false);
+      console.log(error);
+    }
   }
 
   // Change TD Color if TD is in events Date Range
@@ -178,8 +184,13 @@ export const CalendarV3: React.FC = () => {
       </table>
 
       {/* CALENDAR BODY */}
-      <table className="relative mb-10 w-[80%]">
-        <DateRange events={events} oh={oh} setOh={setOh} />
+      <table className="relative mb-10 w-[80%] bg-green-500/10">
+        <DateRange
+          goodInputValue={goodOSMFormat}
+          events={events}
+          oh={oh}
+          setOh={setOh}
+        />
         <tbody>
           {hours.map((hour) => (
             <tr key={hour}>
