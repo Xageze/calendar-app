@@ -3,26 +3,55 @@ import { DateTime } from "luxon";
 function handleClickDeleteDiv(
   index: number,
   events: { start: Date; end: Date }[],
-  oh: string[]
+  oh: string,
+  setEvents: ([]) => void,
+  setOh: React.Dispatch<React.SetStateAction<string>>
 ) {
   let ohOffset = 0;
 
   // If selected div is not the first one
   for (let i = 0; i < index; i++) {
-    // for each event until it reach the selected one add the number of days between the start and the end to get offset
-    const start = DateTime.fromJSDate(events[i].start).startOf("day");
-    const end = DateTime.fromJSDate(events[i].end).startOf("day");
+    // All div before the selected one
+    const dateStart = DateTime.fromJSDate(events[i].start);
+    const dayStart = DateTime.fromJSDate(events[i].start).startOf("day");
+    const dateEnd = DateTime.fromJSDate(events[i].end);
+    const dayEnd = DateTime.fromJSDate(events[i].end).startOf("day");
 
-    if (end.diff(start, "days").days === 1 && end.hour === 0) {
+    // If end at midnight
+    if (dayEnd.diff(dayStart, "days").days === 1 && dateEnd.hour === 0) {
       ohOffset += 1;
-    } else ohOffset += 1 + end.diff(start, "days").days;
+    } else {
+      ohOffset += 1 + dayEnd.diff(dayStart, "days").days;
+    }
   }
 
-  const start = DateTime.fromJSDate(events[index].start).startOf("day");
-  const end = DateTime.fromJSDate(events[index].end).startOf("day");
-  const deleteCount = end.diff(start, "days").days + 1;
-  oh.splice(ohOffset, deleteCount);
-  // console.log(ohOffset, deleteCount);
+  // Clicked DIV
+  const dateStart = DateTime.fromJSDate(events[index].start);
+  const dayStart = DateTime.fromJSDate(events[index].start).startOf("day");
+  const dateEnd = DateTime.fromJSDate(events[index].end);
+  const dayEnd = DateTime.fromJSDate(events[index].end).startOf("day");
+
+  let deleteCount = 1;
+
+  // If One day diff but start hour > end hour
+  if (
+    dayEnd.diff(dayStart, "days").days === 1 &&
+    dateStart.hour > dateEnd.hour
+  ) {
+  } else deleteCount += dayEnd.diff(dayStart, "days").days;
+
+  // Create Array séparate by ";"
+  const ohArray = oh.split(";");
+
+  // Remove the selected div from the Oh string
+  ohArray.splice(ohOffset, deleteCount);
+
+  // Recreate a full string from the ohArray
+  const newOh = ohArray.join(";").trim();
+  setOh(newOh);
+
+  // Remove Event from Events[]
+  events.splice(index, 1);
 }
 
 export default handleClickDeleteDiv;
