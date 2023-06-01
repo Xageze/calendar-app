@@ -12,15 +12,16 @@ function handleClickDeleteDiv(
   // If selected div is not the first one
   for (let i = 0; i < index; i++) {
     // All div before the selected one
-    const dateStart = DateTime.fromJSDate(events[i].start);
     const dayStart = DateTime.fromJSDate(events[i].start).startOf("day");
     const dateEnd = DateTime.fromJSDate(events[i].end);
     const dayEnd = DateTime.fromJSDate(events[i].end).startOf("day");
 
     // If end at midnight
-    if (dayEnd.diff(dayStart, "days").days === 1 && dateEnd.hour === 0) {
-      ohOffset += 1;
-    } else {
+    if (dateEnd.hour === 0) {
+      ohOffset += dayEnd.diff(dayStart, "days").days;
+    }
+    // If does not end at midnight
+    else {
       ohOffset += 1 + dayEnd.diff(dayStart, "days").days;
     }
   }
@@ -42,8 +43,10 @@ function handleClickDeleteDiv(
 
   // Create Array séparate by ";"
   const ohArray = oh.split(";");
+  console.log(ohArray);
 
   // Remove the selected div from the Oh string
+  console.log(ohOffset, deleteCount);
   ohArray.splice(ohOffset, deleteCount);
 
   // Recreate a full string from the ohArray
