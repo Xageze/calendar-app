@@ -34,9 +34,10 @@ function handleClickDeleteDiv(
   let deleteCount = 1;
 
   // If One day diff but start hour > end hour
+
   if (
     dayEnd.diff(dayStart, "days").days === 1 &&
-    dateStart.hour > dateEnd.hour
+    dateStart.hour >= dateEnd.hour
   ) {
   } else deleteCount += dayEnd.diff(dayStart, "days").days;
 

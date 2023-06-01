@@ -135,8 +135,6 @@ export const CalendarV3: React.FC = () => {
     }
   }
 
-  console.log(oh);
-
   return (
     <div className="w-full flex flex-col items-center justify-center">
       {/* OSM INPUT + CLEAR BUTTON */}
