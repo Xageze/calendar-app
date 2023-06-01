@@ -66,28 +66,22 @@ export const CalendarV3: React.FC = () => {
 
   // Create OSM when Input Change
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
+    // Set Input Text
     setOh(e.target.value);
 
-    try {
-      setGoodOSMFormat(true);
-      // set new Event from OS input value
-      setEvents(
-        new opening_hours(e.target.value)
-          .getOpenIntervals(
+    // Create Events Array
+    const ohArray = e.target.value.split(";");
+    setEvents(
+      ohArray
+        .filter((yay) => yay.trim() !== "")
+        .map((yay) => {
+          const EventFormat = new opening_hours(yay).getOpenIntervals(
             DateTime.now().startOf("week").toJSDate(),
             DateTime.now().endOf("week").toJSDate()
-          )
-          .map(([start, end]) => {
-            return {
-              start,
-              end,
-            };
-          })
-      );
-    } catch (error) {
-      setGoodOSMFormat(false);
-      console.log(error);
-    }
+          );
+          return { start: EventFormat[0][0], end: EventFormat[0][1] };
+        })
+    );
   }
 
   // Change TD Color if TD is in events Date Range
@@ -141,6 +135,8 @@ export const CalendarV3: React.FC = () => {
     }
   }
 
+  console.log(oh);
+
   return (
     <div className="w-full flex flex-col items-center justify-center">
       {/* OSM INPUT + CLEAR BUTTON */}
@@ -185,12 +181,7 @@ export const CalendarV3: React.FC = () => {
 
       {/* CALENDAR BODY */}
       <table className="relative mb-10 w-[80%]">
-        <DateRange
-          events={events}
-          setEvents={setEvents}
-          oh={oh}
-          setOh={setOh}
-        />
+        <DateRange events={events} oh={oh} setOh={setOh} />
         <tbody>
           {hours.map((hour) => (
             <tr key={hour}>

@@ -4,7 +4,6 @@ function handleClickDeleteDiv(
   index: number,
   events: { start: Date; end: Date }[],
   oh: string,
-  setEvents: ([]) => void,
   setOh: React.Dispatch<React.SetStateAction<string>>
 ) {
   let ohOffset = 0;
@@ -43,10 +42,8 @@ function handleClickDeleteDiv(
 
   // Create Array séparate by ";"
   const ohArray = oh.split(";");
-  console.log(ohArray);
 
   // Remove the selected div from the Oh string
-  console.log(ohOffset, deleteCount);
   ohArray.splice(ohOffset, deleteCount);
 
   // Recreate a full string from the ohArray

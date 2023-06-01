@@ -4,17 +4,11 @@ import React from "react";
 
 type Props = {
   events: { start: Date; end: Date }[];
-  setEvents: ([]) => void;
   oh: string;
   setOh: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export const DateRange: React.FC<Props> = ({
-  events,
-  oh,
-  setEvents,
-  setOh,
-}) => {
+export const DateRange: React.FC<Props> = ({ events, oh, setOh }) => {
   return (
     <>
       {/* Date Range DIV Over my calendar  */}
@@ -44,7 +38,7 @@ export const DateRange: React.FC<Props> = ({
             <div
               key={index}
               onClick={() => {
-                handleClickDeleteDiv(index, events, oh, setEvents, setOh);
+                handleClickDeleteDiv(index, events, oh, setOh);
               }}
               className={
                 "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
@@ -75,7 +69,7 @@ export const DateRange: React.FC<Props> = ({
                 <div
                   key={i}
                   onClick={() => {
-                    handleClickDeleteDiv(index, events, oh, setEvents, setOh);
+                    handleClickDeleteDiv(index, events, oh, setOh);
                   }}
                   className={
                     "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
@@ -97,7 +91,7 @@ export const DateRange: React.FC<Props> = ({
                 <div
                   key={i}
                   onClick={() => {
-                    handleClickDeleteDiv(index, events, oh, setEvents, setOh);
+                    handleClickDeleteDiv(index, events, oh, setOh);
                   }}
                   className={
                     "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
@@ -123,7 +117,7 @@ export const DateRange: React.FC<Props> = ({
                 <div
                   key={i}
                   onClick={() => {
-                    handleClickDeleteDiv(index, events, oh, setEvents, setOh);
+                    handleClickDeleteDiv(index, events, oh, setOh);
                   }}
                   className={
                     "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
