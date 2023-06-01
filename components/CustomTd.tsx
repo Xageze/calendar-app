@@ -10,6 +10,7 @@ type Props = {
   hour: string;
   inDateRange?: boolean;
   isHovering?: boolean;
+  index: number;
 };
 
 export const CustomTd: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const CustomTd: React.FC<Props> = ({
   hour,
   inDateRange,
   isHovering,
+  index,
 }) => {
   return (
     <td
@@ -36,9 +38,12 @@ export const CustomTd: React.FC<Props> = ({
       }}
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
-        "w-[12.5%] h-7 border select-none",
+        "w-[12.5%] h-2 select-none",
         isHovering && "bg-purple-100",
-        inDateRange && "cursor-not-allowed"
+        inDateRange && "cursor-not-allowed",
+        index % 4 === 0
+          ? "border-t border-solid border-l border-r"
+          : "border-t border-dashed border-l border-r"
       )}
     />
   );

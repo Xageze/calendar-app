@@ -86,7 +86,6 @@ export const CalendarV3: React.FC = () => {
       );
     } catch (error) {
       setGoodOSMFormat(false);
-      console.log(error);
     }
   }
 
@@ -170,7 +169,7 @@ export const CalendarV3: React.FC = () => {
       </p>
 
       {/* CALENDAR HEADER */}
-      <table className="w-[80%] bg-purple-400/20">
+      <table className="w-[80%]">
         <thead>
           <tr>
             <th className="w-[12.5%]" />
@@ -184,7 +183,7 @@ export const CalendarV3: React.FC = () => {
       </table>
 
       {/* CALENDAR BODY */}
-      <table className="relative mb-10 w-[80%] bg-green-500/10">
+      <table className="relative mb-10 w-[80%]">
         <DateRange
           goodInputValue={goodOSMFormat}
           events={events}
@@ -192,9 +191,14 @@ export const CalendarV3: React.FC = () => {
           setOh={setOh}
         />
         <tbody>
-          {hours.map((hour) => (
+          {hours.map((hour, i) => (
             <tr key={hour}>
-              <td className="w-[12.5%]">{hour.endsWith("00") && hour}</td>
+              <td
+                className="font-semibold w-[12.5%] leading-[0px]"
+                style={i % 4 === 0 ? { borderTop: "1px solid #e5e7eb" } : {}}
+              >
+                {hour.endsWith("00") && hour}
+              </td>
               <CustomTd
                 setMouseDown={setMouseDown}
                 setMouseUp={setMouseUp}
@@ -204,6 +208,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Monday", hour)}
                 isHovering={handleTDHoverColor("Monday", hour)}
+                index={i}
               />
               <CustomTd
                 setMouseDown={setMouseDown}
@@ -214,6 +219,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Tuesday", hour)}
                 isHovering={handleTDHoverColor("Tuesday", hour)}
+                index={i}
               />
               <CustomTd
                 setMouseDown={setMouseDown}
@@ -224,6 +230,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Wednesday", hour)}
                 isHovering={handleTDHoverColor("Wednesday", hour)}
+                index={i}
               />
               <CustomTd
                 setMouseDown={setMouseDown}
@@ -234,6 +241,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Thursday", hour)}
                 isHovering={handleTDHoverColor("Thursday", hour)}
+                index={i}
               />
               <CustomTd
                 setMouseDown={setMouseDown}
@@ -244,6 +252,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Friday", hour)}
                 isHovering={handleTDHoverColor("Friday", hour)}
+                index={i}
               />
               <CustomTd
                 setMouseDown={setMouseDown}
@@ -254,6 +263,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Saturday", hour)}
                 isHovering={handleTDHoverColor("Saturday", hour)}
+                index={i}
               />
               <CustomTd
                 setMouseDown={setMouseDown}
@@ -264,6 +274,7 @@ export const CalendarV3: React.FC = () => {
                 hour={hour}
                 inDateRange={handleinDateRange("Sunday", hour)}
                 isHovering={handleTDHoverColor("Sunday", hour)}
+                index={i}
               />
             </tr>
           ))}

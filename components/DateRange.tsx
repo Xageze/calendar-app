@@ -1,3 +1,10 @@
+import {
+  marginLeft,
+  baseMarginYPx,
+  tdHeightPx,
+  YOffsetPx,
+  fullheightPx,
+} from "@/utils/calendarFront";
 import handleClickDeleteDiv from "@/utils/handleClickDeleteDiv";
 import { DateTime } from "luxon";
 import React from "react";
@@ -23,13 +30,13 @@ export const DateRange: React.FC<Props> = ({
           // TODO Améliorer cette magouille ?
           const minuteOffsets = {
             0: 0,
-            15: 28,
-            30: 56,
-            45: 84,
+            15: tdHeightPx,
+            30: tdHeightPx * 2,
+            45: tdHeightPx * 3,
           };
 
           const topOffset =
-            event.start.getHours() * 112 +
+            event.start.getHours() * YOffsetPx +
             minuteOffsets[event.start.getMinutes() as 0 | 15 | 30 | 45];
 
           const leftOffset = DateTime.fromJSDate(event.start).weekday;
@@ -41,6 +48,7 @@ export const DateRange: React.FC<Props> = ({
               "minutes"
             ).minutes;
             // DIV CASE A
+
             return (
               <div
                 key={index}
@@ -48,12 +56,14 @@ export const DateRange: React.FC<Props> = ({
                   handleClickDeleteDiv(index, events, oh, setOh);
                 }}
                 className={
-                  "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                  "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                 }
                 style={{
-                  marginTop: `${5 + topOffset}px`,
-                  marginLeft: `${leftOffset * 12.5 + 0.5}%`,
-                  height: `${28 + (minutesDiff / 15) * 28 - 10}px`,
+                  marginTop: `${baseMarginYPx + topOffset}px`,
+                  marginLeft: `${leftOffset * marginLeft + 0.25}%`,
+                  height: `${
+                    8 + (minutesDiff / 15) * tdHeightPx - baseMarginYPx * 2
+                  }px`,
                 }}
               >
                 {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
@@ -79,12 +89,14 @@ export const DateRange: React.FC<Props> = ({
                       handleClickDeleteDiv(index, events, oh, setOh);
                     }}
                     className={
-                      "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                      "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: `${5 + topOffset}px`,
-                      left: `${leftOffset * 12.5 + 0.5}%`,
-                      height: `${2706 - topOffset}px`,
+                      top: `${baseMarginYPx + topOffset}px`,
+                      left: `${leftOffset * marginLeft + 0.25}%`,
+                      height: `${
+                        fullheightPx - topOffset - baseMarginYPx * 2
+                      }px`,
                     }}
                   >
                     {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
@@ -101,12 +113,12 @@ export const DateRange: React.FC<Props> = ({
                       handleClickDeleteDiv(index, events, oh, setOh);
                     }}
                     className={
-                      "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                      "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: "5px",
-                      left: `${(i + leftOffset) * 12.5 + 0.5}%`,
-                      height: `${2706}px`,
+                      top: baseMarginYPx,
+                      left: `${(i + leftOffset) * marginLeft + 0.25}%`,
+                      height: `${fullheightPx - baseMarginYPx * 2}px`,
                     }}
                   >
                     {"00:00 C 00:00"}
@@ -116,7 +128,7 @@ export const DateRange: React.FC<Props> = ({
                 DateTime.fromJSDate(event.end).toFormat("HH:mm") !== "00:00"
               ) {
                 const lastDivBottomOffset =
-                  DateTime.fromJSDate(event.end).hour * 112 +
+                  DateTime.fromJSDate(event.end).hour * YOffsetPx +
                   minuteOffsets[event.end.getMinutes() as 0 | 15 | 30 | 45];
 
                 elements.push(
@@ -127,12 +139,14 @@ export const DateRange: React.FC<Props> = ({
                       handleClickDeleteDiv(index, events, oh, setOh);
                     }}
                     className={
-                      "absolute text-xs text-center font-semibold text-white w-[11.5%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
+                      "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: "5px",
-                      left: `${(i + leftOffset) * 12.5 + 0.5}%`,
-                      height: `${28 + lastDivBottomOffset - 10}px`,
+                      top: baseMarginYPx,
+                      left: `${(i + leftOffset) * marginLeft + 0.25}%`,
+                      height: `${
+                        tdHeightPx + lastDivBottomOffset - baseMarginYPx * 2
+                      }px`,
                     }}
                   >
                     {"00:00 D " +
