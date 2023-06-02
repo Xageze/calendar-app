@@ -194,10 +194,12 @@ export const CalendarV3: React.FC = () => {
           {hours.map((hour, i) => (
             <tr key={hour}>
               <td
-                className="font-semibold w-[12.5%] leading-[0px]"
+                className="relative font-semibold w-[12.5%] leading-[0px]"
                 style={i % 4 === 0 ? { borderTop: "1px solid #e5e7eb" } : {}}
               >
-                {hour.endsWith("00") && hour}
+                <span className="absolute top-2">
+                  {hour.endsWith("00") && hour}
+                </span>
               </td>
               <CustomTd
                 setMouseDown={setMouseDown}
