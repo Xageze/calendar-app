@@ -91,9 +91,9 @@ export const CalendarV3: React.FC = () => {
       setGoodOSMFormat(true);
       setEvents(
         ohArray
-          .filter((yay) => yay.trim() !== "")
-          .map((yay) => {
-            const EventFormat = new opening_hours(yay).getOpenIntervals(
+          .filter((ohElement) => ohElement.trim() !== "")
+          .map((ohElement) => {
+            const EventFormat = new opening_hours(ohElement).getOpenIntervals(
               DateTime.now().startOf("week").toJSDate(),
               DateTime.now().endOf("week").toJSDate()
             );

@@ -78,14 +78,17 @@ export const DateRange: React.FC<Props> = ({
           }
           // IF NOT SAME DAY
           if (event.start.getDay() !== event.end.getDay()) {
-            let dayDiff =
-              DateTime.fromJSDate(event.end).weekday -
-              DateTime.fromJSDate(event.start).weekday;
-
-            // Fix problem when sundayend at midnight (And was skipping to next week)
-            dayDiff < 0 && (dayDiff = 1);
-
-            console.log(dayDiff);
+            // Get day only difference
+            const dayStart = DateTime.fromJSDate(event.start).toFormat(
+              "yyyy-MM-dd"
+            );
+            const dayEnd = DateTime.fromJSDate(event.end).toFormat(
+              "yyyy-MM-dd"
+            );
+            const dayDiff = DateTime.fromISO(dayEnd).diff(
+              DateTime.fromISO(dayStart),
+              "days"
+            ).days;
 
             const elements = [];
             for (let i = 0; i <= dayDiff; i++) {
