@@ -6,6 +6,7 @@ import {
   fullheightPx,
 } from "@/utils/calendarFront";
 import handleClickDeleteDiv from "@/utils/handleClickDeleteDiv";
+import clsx from "clsx";
 import { DateTime } from "luxon";
 import React from "react";
 
@@ -55,14 +56,17 @@ export const DateRange: React.FC<Props> = ({
                 onClick={() => {
                   handleClickDeleteDiv(index, events, oh, setOh);
                 }}
-                className={
-                  "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
-                }
+                className={clsx(
+                  "absolute cursor-pointer overflow-hidden",
+                  "leading-3 text-xs text-center  font-semibold text-white",
+                  "w-[12%] bg-rose-400 z-10",
+                  "border border-rose-600 rounded-t-md rounded-b-md"
+                )}
                 style={{
                   marginTop: `${baseMarginYPx + topOffset}px`,
                   marginLeft: `${leftOffset * marginLeft + 0.25}%`,
                   height: `${
-                    8 + (minutesDiff / 15) * tdHeightPx - baseMarginYPx * 2
+                    8 + (minutesDiff / 15) * tdHeightPx - baseMarginYPx
                   }px`,
                 }}
               >
@@ -94,9 +98,7 @@ export const DateRange: React.FC<Props> = ({
                     style={{
                       top: `${baseMarginYPx + topOffset}px`,
                       left: `${leftOffset * marginLeft + 0.25}%`,
-                      height: `${
-                        fullheightPx - topOffset - baseMarginYPx * 2
-                      }px`,
+                      height: `${fullheightPx - topOffset - baseMarginYPx}px`,
                     }}
                   >
                     {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
@@ -118,7 +120,7 @@ export const DateRange: React.FC<Props> = ({
                     style={{
                       top: baseMarginYPx,
                       left: `${(i + leftOffset) * marginLeft + 0.25}%`,
-                      height: `${fullheightPx - baseMarginYPx * 2}px`,
+                      height: `${fullheightPx - baseMarginYPx}px`,
                     }}
                   >
                     {"00:00 C 00:00"}
@@ -145,7 +147,7 @@ export const DateRange: React.FC<Props> = ({
                       top: baseMarginYPx,
                       left: `${(i + leftOffset) * marginLeft + 0.25}%`,
                       height: `${
-                        tdHeightPx + lastDivBottomOffset - baseMarginYPx * 2
+                        tdHeightPx + lastDivBottomOffset - baseMarginYPx
                       }px`,
                     }}
                   >
