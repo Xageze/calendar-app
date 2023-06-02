@@ -66,7 +66,7 @@ export const DateRange: React.FC<Props> = ({
                   marginTop: `${baseMarginYPx + topOffset}px`,
                   marginLeft: `${leftOffset * marginLeft + 0.25}%`,
                   height: `${
-                    8 + (minutesDiff / 15) * tdHeightPx - baseMarginYPx
+                    (minutesDiff / 15) * tdHeightPx - baseMarginYPx
                   }px`,
                 }}
               >
@@ -146,9 +146,7 @@ export const DateRange: React.FC<Props> = ({
                     style={{
                       top: baseMarginYPx,
                       left: `${(i + leftOffset) * marginLeft + 0.25}%`,
-                      height: `${
-                        tdHeightPx + lastDivBottomOffset - baseMarginYPx
-                      }px`,
+                      height: `${lastDivBottomOffset - baseMarginYPx}px`,
                     }}
                   >
                     {"00:00 D " +
