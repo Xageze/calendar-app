@@ -46,10 +46,7 @@ export const CalendarV3: React.FC = () => {
     if (!mouseDown || !mouseUp) return false;
 
     let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
-    // Add 15 minutes to end date to make it end correctly
-    let dateRangeEnd = DateTime.fromFormat(mouseUp, "EEEE T")
-      .plus({ minutes: 15 })
-      .toJSDate();
+    let dateRangeEnd = DateTime.fromFormat(mouseUp, "EEEE T").toJSDate();
 
     // If you select a date range from end date to start date, it will swap them
     if (dateRangeStart > dateRangeEnd) {
@@ -57,6 +54,11 @@ export const CalendarV3: React.FC = () => {
       dateRangeStart = dateRangeEnd;
       dateRangeEnd = tempDateRangeStart;
     }
+
+    // Add 15 minutes to the end date
+    dateRangeEnd = DateTime.fromJSDate(dateRangeEnd)
+      .plus({ minutes: 15 })
+      .toJSDate();
 
     setEvents((prev) => [
       ...prev,
