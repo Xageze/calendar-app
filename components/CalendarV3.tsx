@@ -22,7 +22,6 @@ for (let hour = 0; hour < 24; hour++) {
     hours.push(hourString + ":" + minuteString);
   }
 }
-hours.push("24:00");
 
 export const CalendarV3: React.FC = () => {
   const [mousePressed, setMousePressed] = useState(false);
@@ -194,10 +193,16 @@ export const CalendarV3: React.FC = () => {
           {hours.map((hour, i) => (
             <tr key={hour}>
               <td
-                className="relative font-semibold w-[12.5%] leading-[0px]"
-                style={i % 4 === 0 ? { borderTop: "1px solid #e5e7eb" } : {}}
+                className="relative font-semibold w-[12.5%] leading-[0px] border-l border-slate-300"
+                style={
+                  i % 4 === 0
+                    ? { borderTop: "1px solid rgb(203 213 225)" }
+                    : {} && i % 4 === 3
+                    ? { borderBottom: "1px solid rgb(203 213 225)" }
+                    : {}
+                }
               >
-                <span className="absolute top-2">
+                <span className="absolute top-2 left-0.5">
                   {hour.endsWith("00") && hour}
                 </span>
               </td>

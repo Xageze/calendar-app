@@ -42,8 +42,9 @@ export const CustomTd: React.FC<Props> = ({
         isHovering && "bg-purple-100",
         inDateRange && "cursor-not-allowed",
         index % 4 === 0
-          ? "border-t border-solid border-l border-r"
-          : "border-t border-dashed border-l border-r"
+          ? "border-t border-l border-r border-slate-300"
+          : "border-t border-b border-l border-r border-l-slate-300 border-r-slate-300",
+        index % 4 === 3 && "border-b-slate-300"
       )}
     />
   );
