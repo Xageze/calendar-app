@@ -43,8 +43,17 @@ export const DateRange: React.FC<Props> = ({
 
           const leftOffset = DateTime.fromJSDate(event.start).weekday;
 
+          const startDate = DateTime.fromJSDate(event.start).toFormat(
+            "yyyy-MM-dd"
+          );
+          const endDate = DateTime.fromJSDate(event.end).toFormat("yyyy-MM-dd");
+
+          const isSameDay = DateTime.fromISO(startDate).equals(
+            DateTime.fromISO(endDate)
+          );
+
           // IF SAME DAY
-          if (event.start.getDay() === event.end.getDay()) {
+          if (isSameDay) {
             const minutesDiff = DateTime.fromJSDate(event.end).diff(
               DateTime.fromJSDate(event.start),
               "minutes"
@@ -77,7 +86,7 @@ export const DateRange: React.FC<Props> = ({
             );
           }
           // IF NOT SAME DAY
-          if (event.start.getDay() !== event.end.getDay()) {
+          if (!isSameDay) {
             // Get day only difference
             const dayStart = DateTime.fromJSDate(event.start).toFormat(
               "yyyy-MM-dd"
