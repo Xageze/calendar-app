@@ -28,16 +28,17 @@ export const CalendarV3: React.FC = () => {
   const [mouseDown, setMouseDown] = useState("");
   const [mouseUp, setMouseUp] = useState("");
   const [events, setEvents] = useState<{ start: Date; end: Date }[]>([]);
-  const [hoveringEvent, setHoveringEvent] = useState<{
+  const [movingEvent, setMovingEvent] = useState<{
     start: Date;
     end: Date;
   }>();
   const [oh, setOh] = useState<string>("");
-  const [goodOSMFormat, setGoodOSMFormat] = useState(true);
+  const [isGoodOSMFormat, setGoodOSMFormat] = useState(true);
 
   // Create OSM & Events array when click release (MouseUp)
   useMemo(() => {
     if (!mouseDown || !mouseUp) return false;
+    setMovingEvent(undefined);
 
     let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
     // Add 15 minutes to end date to make it end correctly
@@ -98,7 +99,6 @@ export const CalendarV3: React.FC = () => {
     if (events.length === 0) {
       return false;
     }
-
     for (let i = 0; i < events.length; i++) {
       if (events[i].start <= tdDate && tdDate <= events[i].end) {
         return true;
@@ -111,12 +111,10 @@ export const CalendarV3: React.FC = () => {
   function handleTDHoverColor(day: string, hour: string) {
     if (mousePressed) {
       const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
-
-      if (hoveringEvent === undefined) {
+      if (movingEvent === undefined) {
         return false;
       }
-
-      if (hoveringEvent.start <= tdDate && tdDate <= hoveringEvent.end) {
+      if (movingEvent.start <= tdDate && tdDate <= movingEvent.end) {
         return true;
       }
     }
@@ -138,9 +136,10 @@ export const CalendarV3: React.FC = () => {
         dateRangeEnd = tempDateRangeStart;
       }
 
-      setHoveringEvent({ start: dateRangeStart, end: dateRangeEnd });
+      setMovingEvent({ start: dateRangeStart, end: dateRangeEnd });
     }
   }
+  console.log(movingEvent);
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
@@ -159,7 +158,7 @@ export const CalendarV3: React.FC = () => {
           onClick={() => {
             setEvents([]);
             setOh("");
-            setHoveringEvent(undefined);
+            setMovingEvent(undefined);
             setGoodOSMFormat(true);
           }}
         >
@@ -167,7 +166,7 @@ export const CalendarV3: React.FC = () => {
         </button>
       </div>
       <p className="mb-10 text-sm font-semibold tracking-wider text-red-500">
-        {goodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
+        {isGoodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
       </p>
 
       {/* CALENDAR HEADER */}
@@ -187,7 +186,7 @@ export const CalendarV3: React.FC = () => {
       {/* CALENDAR BODY */}
       <table className="relative mb-10 w-[80%]">
         <DateRange
-          goodInputValue={goodOSMFormat}
+          goodInputValue={isGoodOSMFormat}
           events={events}
           oh={oh}
           setOh={setOh}
