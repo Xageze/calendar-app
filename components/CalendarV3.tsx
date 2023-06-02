@@ -155,7 +155,7 @@ export const CalendarV3: React.FC = () => {
         />
 
         <button
-          className="px-8 py-2 h-min bg-orange-500 hover:bg-orange-600 rounded-lg text-white font-semibold"
+          className="px-8 py-2 bg-green-400 hover:bg-green-500 border border-green-500 hover:border-green-600 text-white rounded-lg font-semibold"
           onClick={() => {
             setEvents([]);
             setOh("");

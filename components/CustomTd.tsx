@@ -39,7 +39,7 @@ export const CustomTd: React.FC<Props> = ({
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
         "w-[12.5%] h-2 select-none",
-        isHovering && "bg-purple-100",
+        isHovering && "bg-gray-200",
         inDateRange && "cursor-not-allowed",
         index % 4 === 0
           ? "border-t border-l border-r border-slate-300"

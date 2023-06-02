@@ -71,7 +71,7 @@ export const DateRange: React.FC<Props> = ({
                 }}
               >
                 {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                  " A " +
+                  " - " +
                   DateTime.fromJSDate(event.end).toFormat("HH:mm")}
               </div>
             );
@@ -102,7 +102,7 @@ export const DateRange: React.FC<Props> = ({
                     }}
                   >
                     {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                      " B " +
+                      " - " +
                       "00:00"}
                   </div>
                 );
@@ -123,7 +123,7 @@ export const DateRange: React.FC<Props> = ({
                       height: `${fullheightPx - baseMarginYPx}px`,
                     }}
                   >
-                    {"00:00 C 00:00"}
+                    {"00:00 - 00:00"}
                   </div>
                 );
               } else if (
@@ -149,7 +149,7 @@ export const DateRange: React.FC<Props> = ({
                       height: `${lastDivBottomOffset - baseMarginYPx}px`,
                     }}
                   >
-                    {"00:00 D " +
+                    {"00:00 - " +
                       DateTime.fromJSDate(event.end).toFormat("HH:mm")}
                   </div>
                 );
