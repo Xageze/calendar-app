@@ -35,10 +35,15 @@ export const CalendarV3: React.FC = () => {
   const [oh, setOh] = useState<string>("");
   const [isGoodOSMFormat, setGoodOSMFormat] = useState(true);
 
-  // Create OSM & Events array when click release (MouseUp)
+  /**
+   * When MOUSE UP (release mouse click)
+   * If mouseDown or mouseUp are both defined :
+   *
+   * Fill the Events array with the new event selected
+   * Create OSM Format
+   */
   useMemo(() => {
     if (!mouseDown || !mouseUp) return false;
-    setMovingEvent(undefined);
 
     let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
     // Add 15 minutes to end date to make it end correctly
@@ -67,7 +72,13 @@ export const CalendarV3: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseUp]);
 
-  // Create OSM when Input Change
+  /**
+   * When Input Change (Writing in it)
+   *
+   * setOh -> Input Value
+   * Manage error message if the input value is not in OSM Format
+   * Fill Events Array with Events from the Input Value
+   */
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     // Set Input Text
     setOh(e.target.value);
@@ -92,8 +103,11 @@ export const CalendarV3: React.FC = () => {
     }
   }
 
-  // Change TD Color if TD is in events Date Range
-  function handleinDateRange(day: string, hour: string) {
+  /**
+   * At Each CalendarV3 Render :
+   * Return TRUE if the TD is in the Date Range of Events else FALSE
+   */
+  function handleIsInDateRange(day: string, hour: string) {
     const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
 
     if (events.length === 0) {
@@ -107,8 +121,11 @@ export const CalendarV3: React.FC = () => {
     return false;
   }
 
-  // Change TD Color if TD is in Hovering Event Date Range
-  function handleTDHoverColor(day: string, hour: string) {
+  /**
+   *  Return TRUE if the TD is in the Date Range of the "movingEvent" else FALSE
+   *  Change bg color of CustomTd
+   */
+  function handleIsTDInMovingEventRange(day: string, hour: string) {
     if (mousePressed) {
       const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
       if (movingEvent === undefined) {
@@ -121,8 +138,11 @@ export const CalendarV3: React.FC = () => {
     return false;
   }
 
-  // Create Hover Date Range when the mouse move hover TD && mousePressed
+  /**
+   * Create a "movingEvent" when the click is pressed and the mouse moving
+   */
   function handleMouseMove(day: string, hour: string) {
+    setMovingEvent(undefined);
     if (mousePressed) {
       let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
       let dateRangeEnd = DateTime.fromFormat(
@@ -130,6 +150,7 @@ export const CalendarV3: React.FC = () => {
         "EEEE T"
       ).toJSDate();
 
+      // Most old date always the Start Date
       if (dateRangeStart > dateRangeEnd) {
         let tempDateRangeStart = dateRangeStart;
         dateRangeStart = dateRangeEnd;
@@ -153,7 +174,7 @@ export const CalendarV3: React.FC = () => {
         />
 
         <button
-          className="px-8 py-2 bg-green-400 hover:bg-green-500 border border-green-500 hover:border-green-600 text-white rounded-lg font-semibold"
+          className="px-8 py-2 bg-rose-400 hover:bg-rose-500 border border-rose-500 hover:border-rose-600 text-white rounded-lg font-semibold"
           onClick={() => {
             setEvents([]);
             setOh("");
@@ -214,8 +235,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Monday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Monday", hour)}
-                isHovering={handleTDHoverColor("Monday", hour)}
+                isInDateRange={handleIsInDateRange("Monday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Monday",
+                  hour
+                )}
                 index={i}
               />
               <CustomTd
@@ -225,8 +249,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Tuesday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Tuesday", hour)}
-                isHovering={handleTDHoverColor("Tuesday", hour)}
+                isInDateRange={handleIsInDateRange("Tuesday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Tuesday",
+                  hour
+                )}
                 index={i}
               />
               <CustomTd
@@ -236,8 +263,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Wednesday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Wednesday", hour)}
-                isHovering={handleTDHoverColor("Wednesday", hour)}
+                isInDateRange={handleIsInDateRange("Wednesday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Wednesday",
+                  hour
+                )}
                 index={i}
               />
               <CustomTd
@@ -247,8 +277,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Thursday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Thursday", hour)}
-                isHovering={handleTDHoverColor("Thursday", hour)}
+                isInDateRange={handleIsInDateRange("Thursday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Thursday",
+                  hour
+                )}
                 index={i}
               />
               <CustomTd
@@ -258,8 +291,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Friday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Friday", hour)}
-                isHovering={handleTDHoverColor("Friday", hour)}
+                isInDateRange={handleIsInDateRange("Friday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Friday",
+                  hour
+                )}
                 index={i}
               />
               <CustomTd
@@ -269,8 +305,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Saturday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Saturday", hour)}
-                isHovering={handleTDHoverColor("Saturday", hour)}
+                isInDateRange={handleIsInDateRange("Saturday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Saturday",
+                  hour
+                )}
                 index={i}
               />
               <CustomTd
@@ -280,8 +319,11 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Sunday"}
                 hour={hour}
-                inDateRange={handleinDateRange("Sunday", hour)}
-                isHovering={handleTDHoverColor("Sunday", hour)}
+                isInDateRange={handleIsInDateRange("Sunday", hour)}
+                isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                  "Sunday",
+                  hour
+                )}
                 index={i}
               />
             </tr>

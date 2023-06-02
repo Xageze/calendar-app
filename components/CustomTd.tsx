@@ -8,8 +8,8 @@ type Props = {
   handleMouseMove: (day: string, hour: string) => void;
   day: string;
   hour: string;
-  inDateRange?: boolean;
-  isHovering?: boolean;
+  isInDateRange?: boolean;
+  isTDInMovingEventRange?: boolean;
   index: number;
 };
 
@@ -20,27 +20,26 @@ export const CustomTd: React.FC<Props> = ({
   handleMouseMove,
   day,
   hour,
-  inDateRange,
-  isHovering,
+  isInDateRange,
+  isTDInMovingEventRange,
   index,
 }) => {
   return (
     <td
       onMouseDown={() => {
-        inDateRange
+        isInDateRange
           ? null
           : (setMouseDown(day + " " + hour), setMousePressed(true));
       }}
       onMouseUp={() => {
-        inDateRange
+        isInDateRange
           ? null
           : (setMouseUp(day + " " + hour), setMousePressed(false));
       }}
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
         "w-[12.5%] h-2 select-none",
-        isHovering && "bg-gray-200",
-        inDateRange && "cursor-not-allowed",
+        isTDInMovingEventRange && "bg-gray-200",
         index % 4 === 0
           ? "border-t border-l border-r border-slate-300"
           : "border-t border-b border-l border-r border-l-slate-300 border-r-slate-300",
