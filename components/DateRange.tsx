@@ -27,6 +27,7 @@ export const DateRange: React.FC<Props> = ({
     <>
       {goodInputValue &&
         /* Date Range DIV Over my calendar  */
+
         events.map((event, index) => {
           // TODO Améliorer cette magouille ?
           const minuteOffsets = {
@@ -49,7 +50,6 @@ export const DateRange: React.FC<Props> = ({
               "minutes"
             ).minutes;
             // DIV CASE A
-
             return (
               <div
                 key={index}
@@ -71,16 +71,21 @@ export const DateRange: React.FC<Props> = ({
                 }}
               >
                 {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                  " - " +
+                  " A " +
                   DateTime.fromJSDate(event.end).toFormat("HH:mm")}
               </div>
             );
           }
           // IF NOT SAME DAY
           if (event.start.getDay() !== event.end.getDay()) {
-            const dayDiff =
+            let dayDiff =
               DateTime.fromJSDate(event.end).weekday -
               DateTime.fromJSDate(event.start).weekday;
+
+            // Fix problem when sundayend at midnight (And was skipping to next week)
+            dayDiff < 0 && (dayDiff = 1);
+
+            console.log(dayDiff);
 
             const elements = [];
             for (let i = 0; i <= dayDiff; i++) {
@@ -102,8 +107,8 @@ export const DateRange: React.FC<Props> = ({
                     }}
                   >
                     {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                      " - " +
-                      "00:00"}
+                      " B " +
+                      "24:00"}
                   </div>
                 );
               } else if (i !== dayDiff) {
@@ -123,7 +128,7 @@ export const DateRange: React.FC<Props> = ({
                       height: `${fullheightPx - baseMarginYPx}px`,
                     }}
                   >
-                    {"00:00 - 00:00"}
+                    {"00:00 C 24:00"}
                   </div>
                 );
               } else if (
@@ -149,7 +154,7 @@ export const DateRange: React.FC<Props> = ({
                       height: `${lastDivBottomOffset - baseMarginYPx}px`,
                     }}
                   >
-                    {"00:00 - " +
+                    {"00:00 D " +
                       DateTime.fromJSDate(event.end).toFormat("HH:mm")}
                   </div>
                 );
