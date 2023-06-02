@@ -139,7 +139,6 @@ export const CalendarV3: React.FC = () => {
       setMovingEvent({ start: dateRangeStart, end: dateRangeEnd });
     }
   }
-  console.log(movingEvent);
 
   return (
     <div className="w-full flex flex-col items-center justify-center">
