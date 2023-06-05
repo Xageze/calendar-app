@@ -26,7 +26,11 @@ function createOsmFormat(
     setOh((prev) => `${prev} ${weekdayStart} ${startHour}-${endHour},`);
   } else {
     // If start hour is after end hour AND one day diff
-    if (startDateLuxon.hour >= endDateLuxon.hour && nbJourDiff === 1) {
+    if (
+      startDateLuxon.hour >= endDateLuxon.hour &&
+      nbJourDiff === 1 &&
+      endDateLuxon.hour !== 0
+    ) {
       setOh((prev) => `${prev} ${weekdayStart} ${startHour}-${endHour},`);
     } else {
       setOh((prev) => `${prev} ${weekdayStart} ${startHour}-24:00,`);
