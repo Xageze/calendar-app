@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import createOsmFormat from "./createOsmFormat";
 
 function handleClickDeleteDiv(
   index: number,
@@ -34,7 +35,6 @@ function handleClickDeleteDiv(
   let deleteCount = 1;
 
   // If One day diff but start hour > end hour
-
   if (
     dayEnd.diff(dayStart, "days").days === 1 &&
     dateStart.hour >= dateEnd.hour
@@ -42,17 +42,19 @@ function handleClickDeleteDiv(
   } else deleteCount += dayEnd.diff(dayStart, "days").days;
 
   // Create Events Array
-  const ohArray = oh.split(";");
+  const ohArray = oh.split(/[;,]/);
 
   // Remove the selected div from the Oh string
   ohArray.splice(ohOffset, deleteCount);
 
-  // Recreate a full string from the ohArray
-  const newOh = ohArray.join(";").trim();
-  setOh(newOh);
-
   // Remove Event from Events[]
   events.splice(index, 1);
+
+  // Recreate Oh String from events array
+  setOh("");
+  events.forEach((event) => {
+    createOsmFormat(event.start, event.end, setOh);
+  });
 }
 
 export default handleClickDeleteDiv;

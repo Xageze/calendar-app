@@ -87,46 +87,25 @@ export const CalendarV3: React.FC = () => {
     // Set Input Text
     setOh(e.target.value);
 
-    // Create Events Array (+ Remove if there is multiple ";")
-    const ohArray = e.target.value
-      .split(";")
-      .map((substring) => substring.trim())
-      .filter((substring) => substring !== "");
-
     try {
       setGoodOSMFormat(true);
-      setEvents(
-        ohArray
-          .filter((ohElement) => ohElement.trim() !== "")
-          .map((ohElement) => {
-            const EventFormat = new opening_hours(ohElement).getOpenIntervals(
-              DateTime.now().startOf("week").toJSDate(),
-              DateTime.now().endOf("week").toJSDate()
-            );
-            return { start: EventFormat[0][0], end: EventFormat[0][1] };
-          })
+      const eventsOhFormat = new opening_hours(e.target.value).getOpenIntervals(
+        DateTime.now().startOf("week").toJSDate(),
+        DateTime.now().endOf("week").toJSDate()
       );
+      // Create New Events Array from Oh Array
+      const newEvents = [];
+      for (let i = 0; i < eventsOhFormat.length; i++) {
+        const event = {
+          start: eventsOhFormat[i][0],
+          end: eventsOhFormat[i][1],
+        };
+        newEvents.push(event);
+      }
+      setEvents(newEvents);
     } catch (error) {
       setGoodOSMFormat(false);
     }
-  }
-
-  /**
-   * At Each CalendarV3 Render :
-   * Return TRUE if the TD is in the Date Range of Events else FALSE
-   */
-  function handleIsInDateRange(day: string, hour: string) {
-    const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
-
-    if (events.length === 0) {
-      return false;
-    }
-    for (let i = 0; i < events.length; i++) {
-      if (events[i].start <= tdDate && tdDate <= events[i].end) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -243,7 +222,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Monday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Monday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Monday",
                   hour
@@ -257,7 +235,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Tuesday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Tuesday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Tuesday",
                   hour
@@ -271,7 +248,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Wednesday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Wednesday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Wednesday",
                   hour
@@ -285,7 +261,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Thursday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Thursday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Thursday",
                   hour
@@ -299,7 +274,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Friday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Friday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Friday",
                   hour
@@ -313,7 +287,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Saturday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Saturday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Saturday",
                   hour
@@ -327,7 +300,6 @@ export const CalendarV3: React.FC = () => {
                 handleMouseMove={handleMouseMove}
                 day={"Sunday"}
                 hour={hour}
-                isInDateRange={handleIsInDateRange("Sunday", hour)}
                 isTDInMovingEventRange={handleIsTDInMovingEventRange(
                   "Sunday",
                   hour

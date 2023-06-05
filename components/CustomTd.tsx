@@ -8,7 +8,6 @@ type Props = {
   handleMouseMove: (day: string, hour: string) => void;
   day: string;
   hour: string;
-  isInDateRange?: boolean;
   isTDInMovingEventRange?: boolean;
   index: number;
 };
@@ -20,21 +19,16 @@ export const CustomTd: React.FC<Props> = ({
   handleMouseMove,
   day,
   hour,
-  isInDateRange,
   isTDInMovingEventRange,
   index,
 }) => {
   return (
     <td
       onMouseDown={() => {
-        isInDateRange
-          ? null
-          : (setMouseDown(day + " " + hour), setMousePressed(true));
+        setMouseDown(day + " " + hour), setMousePressed(true);
       }}
       onMouseUp={() => {
-        isInDateRange
-          ? null
-          : (setMouseUp(day + " " + hour), setMousePressed(false));
+        setMouseUp(day + " " + hour), setMousePressed(false);
       }}
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
