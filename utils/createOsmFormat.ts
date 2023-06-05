@@ -41,7 +41,7 @@ function createOsmFormat(
       // If one day diff + end hour is 00:00 (case when you end at midnight and it skip to next day)
       if (endDateLuxon.hour === 0) {
       } else {
-        setOh((prev) => `${prev} ${weekdayEnd} 24:00-${endHour};`);
+        setOh((prev) => `${prev} ${weekdayEnd} 00:00-${endHour};`);
       }
     }
   }

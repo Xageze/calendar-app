@@ -85,8 +85,12 @@ export const CalendarV3: React.FC = () => {
     // Set Input Text
     setOh(e.target.value);
 
-    // Create Events Array
-    const ohArray = e.target.value.split(";");
+    // Create Events Array (+ Remove if there is multiple ";")
+    const ohArray = e.target.value
+      .split(";")
+      .map((substring) => substring.trim())
+      .filter((substring) => substring !== "");
+
     try {
       setGoodOSMFormat(true);
       setEvents(

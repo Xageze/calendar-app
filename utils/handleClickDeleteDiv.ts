@@ -41,8 +41,11 @@ function handleClickDeleteDiv(
   ) {
   } else deleteCount += dayEnd.diff(dayStart, "days").days;
 
-  // Create Array séparate by ";"
-  const ohArray = oh.split(";");
+  // Create Events Array (+ Remove if there is multiple ";")
+  const ohArray = oh
+    .split(";")
+    .map((substring) => substring.trim())
+    .filter((substring) => substring !== "");
 
   // Remove the selected div from the Oh string
   ohArray.splice(ohOffset, deleteCount);
