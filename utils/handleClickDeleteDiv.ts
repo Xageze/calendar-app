@@ -18,10 +18,10 @@ function handleClickDeleteDiv(
     // If end at midnight
     if (dateEnd.hour === 0) {
       ohOffset += dayEnd.diff(dayStart, "days").days;
-    }
-    // If does not end at midnight
-    else {
+    } else if (dayStart.hour > dayEnd.hour) {
       ohOffset += 1 + dayEnd.diff(dayStart, "days").days;
+    } else if (dayStart.hour <= dayEnd.hour) {
+      ohOffset += 1;
     }
   }
 
