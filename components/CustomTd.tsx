@@ -26,6 +26,7 @@ export const CustomTd: React.FC<Props> = ({
 }) => {
   return (
     <td
+      onClick={() => console.log(index)}
       onMouseDown={() => {
         isInDateRange
           ? null
@@ -39,11 +40,24 @@ export const CustomTd: React.FC<Props> = ({
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
         "w-[12.5%] h-2 select-none",
-        isTDInMovingEventRange && "bg-gray-200",
+        isTDInMovingEventRange && "bg-rose-300",
+        // Heure Pile
         index % 4 === 0
-          ? "border-t border-l border-r border-slate-300"
-          : "border-t border-b border-l border-r border-l-slate-300 border-r-slate-300",
-        index % 4 === 3 && "border-b-slate-300"
+          ? isTDInMovingEventRange
+            ? index === 0
+              ? "border-l border-r border-t border-slate-3s00"
+              : "border-l border-r border-slate-300"
+            : "border-l border-r border-t border-slate-300"
+          : // Les autres heures (15, 30, 45)
+          isTDInMovingEventRange
+          ? "border-l border-r border-slate-300"
+          : "border-t border-b border-l border-r border-l-slate-300 border-r-slate-300 ",
+        index % 4 === 3 &&
+          (isTDInMovingEventRange
+            ? index === 95
+              ? "border-b border-b-slate-300"
+              : null
+            : "border-b-slate-300")
       )}
     />
   );

@@ -69,6 +69,8 @@ export const CalendarV3: React.FC = () => {
     ]);
 
     createOsmFormat(dateRangeStart, dateRangeEnd, setOh);
+    setMouseDown("");
+    setMouseUp("");
     return;
     // TODO gérer tableau de dépendance
     // eslint-disable-next-line react-hooks/exhaustive-deps
