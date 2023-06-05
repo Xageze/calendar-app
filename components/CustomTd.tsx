@@ -26,7 +26,6 @@ export const CustomTd: React.FC<Props> = ({
 }) => {
   return (
     <td
-      onClick={() => console.log(index)}
       onMouseDown={() => {
         isInDateRange
           ? null
@@ -45,7 +44,7 @@ export const CustomTd: React.FC<Props> = ({
         index % 4 === 0
           ? isTDInMovingEventRange
             ? index === 0
-              ? "border-l border-r border-t border-slate-3s00"
+              ? "border-l border-r border-t border-slate-300"
               : "border-l border-r border-slate-300"
             : "border-l border-r border-t border-slate-300"
           : // Les autres heures (15, 30, 45)
