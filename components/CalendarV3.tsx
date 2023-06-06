@@ -24,15 +24,15 @@ for (let hour = 0; hour < 24; hour++) {
 }
 
 export const CalendarV3: React.FC = () => {
-  const [mousePressed, setMousePressed] = useState(false);
+  const [events, setEvents] = useState<{ start: Date; end: Date }[]>([]);
+  const [oh, setOh] = useState<string>("");
+  const [isMousePressed, setIsMousePressed] = useState(false);
   const [mouseDown, setMouseDown] = useState("");
   const [mouseUp, setMouseUp] = useState("");
-  const [events, setEvents] = useState<{ start: Date; end: Date }[]>([]);
   const [movingEvent, setMovingEvent] = useState<{
     start: Date;
     end: Date;
   }>();
-  const [oh, setOh] = useState<string>("");
   const [isGoodOSMFormat, setGoodOSMFormat] = useState(true);
 
   /**
@@ -109,28 +109,11 @@ export const CalendarV3: React.FC = () => {
   }
 
   /**
-   *  Return TRUE if the TD is in the Date Range of the "movingEvent" else FALSE
-   *  Change bg color of CustomTd
-   */
-  function handleIsTDInMovingEventRange(day: string, hour: string) {
-    if (mousePressed) {
-      const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
-      if (movingEvent === undefined) {
-        return false;
-      }
-      if (movingEvent.start <= tdDate && tdDate <= movingEvent.end) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Create a "movingEvent" when the click is pressed and the mouse moving
    */
   function handleMouseMove(day: string, hour: string) {
     setMovingEvent(undefined);
-    if (mousePressed) {
+    if (isMousePressed) {
       let dateRangeStart = DateTime.fromFormat(mouseDown, "EEEE T").toJSDate();
       let dateRangeEnd = DateTime.fromFormat(
         day + " " + hour,
@@ -146,6 +129,23 @@ export const CalendarV3: React.FC = () => {
 
       setMovingEvent({ start: dateRangeStart, end: dateRangeEnd });
     }
+  }
+
+  /**
+   *  Return TRUE if the TD is in the Date Range of the "movingEvent" else FALSE
+   *  Change bg color of CustomTd
+   */
+  function handleIsTDInMovingEventRange(day: string, hour: string) {
+    if (isMousePressed) {
+      const tdDate = DateTime.fromFormat(day + " " + hour, "EEEE T").toJSDate();
+      if (movingEvent === undefined) {
+        return false;
+      }
+      if (movingEvent.start <= tdDate && tdDate <= movingEvent.end) {
+        return true;
+      }
+    }
+    return false;
   }
 
   return (
@@ -171,12 +171,12 @@ export const CalendarV3: React.FC = () => {
         >
           Clear
         </button>
-        <p className="mb-10 text-sm font-semibold tracking-wider text-red-500">
-          {isGoodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
-        </p>
       </div>
+      <p className="text-sm font-semibold tracking-wider text-red-500">
+        {isGoodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
+      </p>
       {/* CALENDAR DAYS, BODY, DATERANGE */}
-      <div className="relative mt-14 w-[80%]">
+      <div className="relative mt-10 w-[80%]">
         <DateRange
           goodInputValue={isGoodOSMFormat}
           events={events}
@@ -217,95 +217,95 @@ export const CalendarV3: React.FC = () => {
                   </span>
                 </td>
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Monday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Monday",
                     hour
                   )}
-                  index={i}
                 />
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Tuesday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Tuesday",
                     hour
                   )}
-                  index={i}
                 />
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Wednesday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Wednesday",
                     hour
                   )}
-                  index={i}
                 />
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Thursday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Thursday",
                     hour
                   )}
-                  index={i}
                 />
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Friday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Friday",
                     hour
                   )}
-                  index={i}
                 />
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Saturday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Saturday",
                     hour
                   )}
-                  index={i}
                 />
                 <CustomTd
-                  setMouseDown={setMouseDown}
-                  setMouseUp={setMouseUp}
-                  setMousePressed={setMousePressed}
-                  handleMouseMove={handleMouseMove}
+                  index={i}
                   day={"Sunday"}
                   hour={hour}
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setIsMousePressed={setIsMousePressed}
+                  handleMouseMove={handleMouseMove}
                   isTDInMovingEventRange={handleIsTDInMovingEventRange(
                     "Sunday",
                     hour
                   )}
-                  index={i}
                 />
               </tr>
             ))}

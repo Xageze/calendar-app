@@ -4,7 +4,7 @@ import { clsx } from "clsx";
 type Props = {
   setMouseDown: React.Dispatch<React.SetStateAction<string>>;
   setMouseUp: React.Dispatch<React.SetStateAction<string>>;
-  setMousePressed: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsMousePressed: React.Dispatch<React.SetStateAction<boolean>>;
   handleMouseMove: (day: string, hour: string) => void;
   day: string;
   hour: string;
@@ -13,22 +13,22 @@ type Props = {
 };
 
 export const CustomTd: React.FC<Props> = ({
-  setMouseDown,
-  setMouseUp,
-  setMousePressed,
-  handleMouseMove,
+  index,
   day,
   hour,
+  setMouseDown,
+  setMouseUp,
+  setIsMousePressed,
+  handleMouseMove,
   isTDInMovingEventRange,
-  index,
 }) => {
   return (
     <td
       onMouseDown={() => {
-        setMouseDown(day + " " + hour), setMousePressed(true);
+        setMouseDown(day + " " + hour), setIsMousePressed(true);
       }}
       onMouseUp={() => {
-        setMouseUp(day + " " + hour), setMousePressed(false);
+        setMouseUp(day + " " + hour), setIsMousePressed(false);
       }}
       onMouseOver={() => handleMouseMove(day, hour)}
       className={clsx(
