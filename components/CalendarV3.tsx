@@ -93,6 +93,7 @@ export const CalendarV3: React.FC = () => {
         DateTime.now().startOf("week").toJSDate(),
         DateTime.now().endOf("week").toJSDate()
       );
+
       // Create New Events Array from Oh Array
       const newEvents = [];
       for (let i = 0; i < eventsOhFormat.length; i++) {

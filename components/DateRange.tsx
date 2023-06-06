@@ -30,17 +30,9 @@ export const DateRange: React.FC<Props> = ({
         /* Date Range DIV Over my calendar  */
 
         events.map((event, index) => {
-          // TODO Améliorer cette magouille ?
-          const minuteOffsets = {
-            0: 0,
-            15: tdHeightPx,
-            30: tdHeightPx * 2,
-            45: tdHeightPx * 3,
-          };
-
           const topOffset =
             event.start.getHours() * YOffsetPx +
-            minuteOffsets[event.start.getMinutes() as 0 | 15 | 30 | 45];
+            (event.start.getMinutes() * YOffsetPx) / 60;
 
           const leftOffset = DateTime.fromJSDate(event.start).weekday;
 
@@ -81,7 +73,7 @@ export const DateRange: React.FC<Props> = ({
                 }}
               >
                 {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                  " A " +
+                  " - " +
                   DateTime.fromJSDate(event.end).toFormat("HH:mm")}
               </div>
             );
@@ -120,7 +112,7 @@ export const DateRange: React.FC<Props> = ({
                     }}
                   >
                     {DateTime.fromJSDate(event.start).toFormat("HH:mm") +
-                      " B " +
+                      " - " +
                       "24:00"}
                   </div>
                 );
@@ -141,7 +133,7 @@ export const DateRange: React.FC<Props> = ({
                       height: `${fullheightPx - baseMarginYPx}px`,
                     }}
                   >
-                    {"00:00 C 24:00"}
+                    {"00:00 - 24:00"}
                   </div>
                 );
               } else if (
@@ -149,7 +141,7 @@ export const DateRange: React.FC<Props> = ({
               ) {
                 const lastDivBottomOffset =
                   DateTime.fromJSDate(event.end).hour * YOffsetPx +
-                  minuteOffsets[event.end.getMinutes() as 0 | 15 | 30 | 45];
+                  (DateTime.fromJSDate(event.end).minute * YOffsetPx) / 60;
 
                 elements.push(
                   // DIV CASE D
@@ -167,7 +159,7 @@ export const DateRange: React.FC<Props> = ({
                       height: `${lastDivBottomOffset - baseMarginYPx}px`,
                     }}
                   >
-                    {"00:00 D " +
+                    {"00:00 - " +
                       DateTime.fromJSDate(event.end).toFormat("HH:mm")}
                   </div>
                 );
