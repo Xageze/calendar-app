@@ -171,145 +171,147 @@ export const CalendarV3: React.FC = () => {
         >
           Clear
         </button>
+        <p className="mb-10 text-sm font-semibold tracking-wider text-red-500">
+          {isGoodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
+        </p>
       </div>
-      <p className="mb-10 text-sm font-semibold tracking-wider text-red-500">
-        {isGoodOSMFormat ? "" : "Veuillez entrer un format OSM valide"}
-      </p>
-
-      {/* CALENDAR HEADER */}
-      <table className="w-[80%]">
-        <thead>
-          <tr>
-            <th className="w-[12.5%]" />
-            {days.map((day) => (
-              <th key={day} className="w-[12.5%] text-xs sm:text-sm">
-                {day}
-              </th>
-            ))}
-          </tr>
-        </thead>
-      </table>
-
-      {/* CALENDAR BODY */}
-      <table className="relative mb-10 w-[80%]">
+      {/* CALENDAR DAYS, BODY, DATERANGE */}
+      <div className="relative mt-14 w-[80%]">
         <DateRange
           goodInputValue={isGoodOSMFormat}
           events={events}
           oh={oh}
           setOh={setOh}
         />
-        <tbody>
-          {hours.map((hour, i) => (
-            <tr key={hour}>
-              <td
-                className="relative font-semibold w-[12.5%] leading-[0px] border-l border-slate-300"
-                style={
-                  i % 4 === 0
-                    ? { borderTop: "1px solid rgb(203 213 225)" }
-                    : {} && i % 4 === 3
-                    ? { borderBottom: "1px solid rgb(203 213 225)" }
-                    : {}
-                }
-              >
-                <span className="absolute top-2 left-0.5">
-                  {hour.endsWith("00") && hour}
-                </span>
-              </td>
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Monday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Monday",
-                  hour
-                )}
-                index={i}
-              />
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Tuesday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Tuesday",
-                  hour
-                )}
-                index={i}
-              />
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Wednesday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Wednesday",
-                  hour
-                )}
-                index={i}
-              />
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Thursday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Thursday",
-                  hour
-                )}
-                index={i}
-              />
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Friday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Friday",
-                  hour
-                )}
-                index={i}
-              />
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Saturday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Saturday",
-                  hour
-                )}
-                index={i}
-              />
-              <CustomTd
-                setMouseDown={setMouseDown}
-                setMouseUp={setMouseUp}
-                setMousePressed={setMousePressed}
-                handleMouseMove={handleMouseMove}
-                day={"Sunday"}
-                hour={hour}
-                isTDInMovingEventRange={handleIsTDInMovingEventRange(
-                  "Sunday",
-                  hour
-                )}
-                index={i}
-              />
+        {/* DAYS */}
+        <table className="w-full select-none">
+          <thead>
+            <tr>
+              <th className="w-[12.5%]" />
+              {days.map((day) => (
+                <th key={day} className="w-[12.5%]">
+                  {day}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+        </table>
+
+        {/* BODY */}
+        <table className="relative mb-10 w-full select-none">
+          <tbody>
+            {hours.map((hour, i) => (
+              <tr key={hour}>
+                <td
+                  className="relative font-semibold w-[12.5%] leading-[0px] border-l border-slate-300"
+                  style={
+                    i % 4 === 0
+                      ? { borderTop: "1px solid rgb(203 213 225)" }
+                      : {} && i % 4 === 3
+                      ? { borderBottom: "1px solid rgb(203 213 225)" }
+                      : {}
+                  }
+                >
+                  <span className="absolute top-2 left-0.5">
+                    {hour.endsWith("00") && hour}
+                  </span>
+                </td>
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Monday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Monday",
+                    hour
+                  )}
+                  index={i}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Tuesday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Tuesday",
+                    hour
+                  )}
+                  index={i}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Wednesday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Wednesday",
+                    hour
+                  )}
+                  index={i}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Thursday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Thursday",
+                    hour
+                  )}
+                  index={i}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Friday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Friday",
+                    hour
+                  )}
+                  index={i}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Saturday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Saturday",
+                    hour
+                  )}
+                  index={i}
+                />
+                <CustomTd
+                  setMouseDown={setMouseDown}
+                  setMouseUp={setMouseUp}
+                  setMousePressed={setMousePressed}
+                  handleMouseMove={handleMouseMove}
+                  day={"Sunday"}
+                  hour={hour}
+                  isTDInMovingEventRange={handleIsTDInMovingEventRange(
+                    "Sunday",
+                    hour
+                  )}
+                  index={i}
+                />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

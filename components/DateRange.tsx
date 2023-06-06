@@ -4,6 +4,7 @@ import {
   tdHeightPx,
   YOffsetPx,
   fullheightPx,
+  marginTopPx,
 } from "@/utils/calendarFront";
 import handleClickDeleteDiv from "@/utils/handleClickDeleteDiv";
 import clsx from "clsx";
@@ -72,7 +73,7 @@ export const DateRange: React.FC<Props> = ({
                   "border border-rose-600 rounded-t-md rounded-b-md"
                 )}
                 style={{
-                  marginTop: `${baseMarginYPx + topOffset}px`,
+                  marginTop: `${marginTopPx + baseMarginYPx + topOffset}px`,
                   marginLeft: `${leftOffset * marginLeft + 0.25}%`,
                   height: `${
                     (minutesDiff / 15) * tdHeightPx - baseMarginYPx
@@ -113,7 +114,7 @@ export const DateRange: React.FC<Props> = ({
                       "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: `${baseMarginYPx + topOffset}px`,
+                      top: `${marginTopPx + baseMarginYPx + topOffset}px`,
                       left: `${leftOffset * marginLeft + 0.25}%`,
                       height: `${fullheightPx - topOffset - baseMarginYPx}px`,
                     }}
@@ -135,7 +136,7 @@ export const DateRange: React.FC<Props> = ({
                       "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: baseMarginYPx,
+                      top: baseMarginYPx + marginTopPx,
                       left: `${(i + leftOffset) * marginLeft + 0.25}%`,
                       height: `${fullheightPx - baseMarginYPx}px`,
                     }}
@@ -161,7 +162,7 @@ export const DateRange: React.FC<Props> = ({
                       "absolute cursor-pointer text-xs text-center font-semibold text-white w-[12%] bg-rose-400 z-10 border border-rose-600 rounded-t-md rounded-b-md"
                     }
                     style={{
-                      top: baseMarginYPx,
+                      top: baseMarginYPx + marginTopPx,
                       left: `${(i + leftOffset) * marginLeft + 0.25}%`,
                       height: `${lastDivBottomOffset - baseMarginYPx}px`,
                     }}

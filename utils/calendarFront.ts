@@ -3,5 +3,13 @@ const baseMarginYPx = 1;
 const marginLeft = 12.5;
 const tdHeightPx = 8;
 const fullheightPx = tdHeightPx * 24 * 4;
+const marginTopPx = 26;
 
-export { YOffsetPx, baseMarginYPx, marginLeft, tdHeightPx, fullheightPx };
+export {
+  YOffsetPx,
+  baseMarginYPx,
+  marginLeft,
+  tdHeightPx,
+  fullheightPx,
+  marginTopPx,
+};
